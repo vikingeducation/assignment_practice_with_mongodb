@@ -191,17 +191,87 @@ Find the name and price of all the products with names that begin with the lette
 
 Using $where, find all the product names that begin with T
 
-db.products.find({
-  $where : "this.name  == /^T/"
-});
+    db.products.find({
+      $where: "/^T/.test(this.name)"
+    });
 
 
 Using $where, find all the product names that begin with capital F or end with lowercase S
 
+    db.products.find({
+      $and: [
+      { $where: "/^F/.test(this.name)" },
+      { $where: "/s$/.test(this.name)" },
+      ]
+    });
 
 Using $where, find all the product names that begin with capital T and have a price less than $100
+
+    db.products.find({
+      $and: [
+      { $where: "/^B/.test(this.name)" },
+      { $where: "this.price < 100" },
+      ]
+    });
+
 Using $where, find all the product names and prices of products that either start with A and have a price of at least $100 or start with B and have a price of at most $100
 
+
+    db.products.find{
+      $or: [
+        { $and: [
+          { $where: "/^A/.test(this.name)" },
+          { $where: "this.price >= 100" }
+        ]},
+        { $and: [
+          { $where: "/^B/.test(this.name)" },
+          { $where: "this.price <= 100" }
+        ]}
+      ]
+    });
+
+Aggregating
+
+Find the total number of sales each department made and sort the results by the department name
+
+    db.products.aggregate([{
+      $group: { _id: "$department", sum: { $sum: "$sales" } }
+    }]);
+
+
+Find the total number of sales each department made of a product with a price of at least $100 and sort the results by the department name
+
+    db.products.aggregate([
+      { $match: { price: {$gte: 100}}},
+      { $group: { _id: "$department", sum: { $sum: "$sales" }}},
+      { $sort: {_id:1} }
+    ]);
+
+Find the number of out of stock products in each department and sort the results by the department name
+
+    db.products.aggregate([
+      { $match: { stock: 0}},
+      { $group: { _id: "$department", sum: { $sum: 1 }}},
+      { $sort: {_id:1} }
+    ]);
+
+
+Map-Reduce
+
+Find the number of products with each color
+
+    db.students.mapReduce(
+      function() { emit(this.color, this.score); },
+      function(keys, values) { return Array.sum(values); },
+      {
+        query: {},
+        out: "score_totals_by_subject"
+      }
+    ).find();
+
+Find the total revenue of each department (how much did each department make in sales?)
+Find the potential revenue of each product (how much can each product make if the entire remaining stock is sold?)
+Find the sum of the total and potential revenue for each product
 
 ## Restaurants
 
