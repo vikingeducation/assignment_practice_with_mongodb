@@ -229,17 +229,20 @@ db.products.aggregate([
 
 // Find the number of products with each color
 db.products.mapReduce(
-  function() { emit(this.color, this.name); },
-  function(keys, values) { return Array.sum(1); },
+  function() { emit(this.color, 1); },
+  function(keys, values) { return Array.sum(values); },
   {
     query: {},
     out: "number_of_products_with_colors"
   }
 ).find();
 
+
+
+
 // Find the total revenue of each department (how much did each department make in sales?)
 db.products.mapReduce(
-  function() { emit(this.subject, this.score); },
+  function() { emit(this.department, this.sales); },
   function(keys, values) { return Array.sum(values); },
   {
     query: {},
@@ -255,15 +258,21 @@ db.products.mapReduce(
 // For each of these challenges use the Single Purpose Aggregation Operations to create a query that returns the described results.
 
 // How many products are there?
+db.products.count();
 
 // How many products are out of stock?
+db.products.count({ stock: 0 });
 
 // How many products are fully stocked? (100)
+db.products.count({ stock: 100 });
 
 // How many products are almost out of stock? (>= 5)
+db.products.count({ stock: { $lte: 5 } });
 
 // What are all the unique names of all the departments?
+db.products.distinct('department');
 
 // What are all the unique names of product colors?
+db.products.distinct('color');
 
 // Find the total number of out of stock products for each department using the db.collection.group() method
