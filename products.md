@@ -295,5 +295,56 @@ db.products.aggregate([
 Find the number of out of stock products in each department and sort the results by the department name
 
 ```javascript
+db.products.aggregate([
+  { $match: { stock: 0 } },
+  { $group: { _id: '$department', outOfStock: { $sum: 1 }} },
+  { $sort: { _id: 1 } }
+]);
 
 ```
+
+For each of these challenges use the Map-Reduce to create a query that returns the described results.
+
+Find the number of products with each color
+```javascript
+db.products.mapReduce(
+  function() { emit(this.color, 1); },
+  function(keys, value) { return Array.sum(value); },
+  {
+    query: {},
+    out: "colors"
+  }
+).find();
+
+```
+Find the total revenue of each department (how much did each department make in sales?)
+```javascript
+db.products.mapReduce(
+  function() { emit(this.department, (this.price * this.sales)); },
+  function(keys, value) { return Array.sum(value); },
+  {
+    query: {},
+    out: "RevenuePerDepartment"
+  }
+).find();
+
+```
+Find the potential revenue of each product (how much can each product make if the entire remaining stock is sold?)
+
+```javascript
+db.products.find({name : 'Alnoor Halal Deli'});
+db.products.mapReduce(
+  function() { emit(this.name, (this.price * this.stock)); },
+  function(keys, value) { return Array.sum(value); },
+  {
+    query: {},
+    out: "ProductPotentialRevenue"
+  }
+).find();
+```
+Find the sum of the total and potential revenue for each product
+```javascript
+```
+
+{name : 'Alnoor Halal Deli'});
+{ "_id" : ObjectId("58efe5f4c9999ced8d361164"), "address" : { "building" : "672", "coord" : [ -73.995415, 40.663333 ], "street" : "4 Avenue", "zipcode" : "11232" }, "borough" : "Brooklyn", "cuisine" : "Middle Eastern", "grades" : [ { "date" : ISODate("2014-02-27T00:00:00Z"), "grade" : "A", "score" : 9 }, { "date" : ISODate("2013-08-28T00:00:00Z"), "grade" : "A", "score" : 9 }, { "date" : ISODate("2013-02-22T00:00:00Z"), "grade" : "A", "score" : 10 }, { "date" : ISODate("2012-01-30T00:00:00Z"), "grade" : "A", "score" : 11 } ], "name" : "Alnoor Halal Deli", "restaurant_id" : "41427731" }
