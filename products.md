@@ -332,7 +332,6 @@ db.products.mapReduce(
 Find the potential revenue of each product (how much can each product make if the entire remaining stock is sold?)
 
 ```javascript
-db.products.find({name : 'Alnoor Halal Deli'});
 db.products.mapReduce(
   function() { emit(this.name, (this.price * this.stock)); },
   function(keys, value) { return Array.sum(value); },
@@ -342,9 +341,89 @@ db.products.mapReduce(
   }
 ).find();
 ```
+
 Find the sum of the total and potential revenue for each product
 ```javascript
+db.products.mapReduce(
+  function() { emit(this.name, (this.price * this.stock + this.price * this.sales)); },
+  function(keys, value) { return Array.sum(value); },
+  {
+    query: {},
+    out: "ProductPotentialRevenue"
+  }
+).find();
 ```
 
-{name : 'Alnoor Halal Deli'});
-{ "_id" : ObjectId("58efe5f4c9999ced8d361164"), "address" : { "building" : "672", "coord" : [ -73.995415, 40.663333 ], "street" : "4 Avenue", "zipcode" : "11232" }, "borough" : "Brooklyn", "cuisine" : "Middle Eastern", "grades" : [ { "date" : ISODate("2014-02-27T00:00:00Z"), "grade" : "A", "score" : 9 }, { "date" : ISODate("2013-08-28T00:00:00Z"), "grade" : "A", "score" : 9 }, { "date" : ISODate("2013-02-22T00:00:00Z"), "grade" : "A", "score" : 10 }, { "date" : ISODate("2012-01-30T00:00:00Z"), "grade" : "A", "score" : 11 } ], "name" : "Alnoor Halal Deli", "restaurant_id" : "41427731" }
+### Restaurants
+
+Find the first 5 restaurants returning only the name
+
+```javascript
+db.restaurants.find(
+  {},
+  { _id: 0, name: 1 }
+).limit(5);
+```
+
+Find the name of all restaurants with at least 1 grade of A or B
+
+```javascript
+db.restaurants.find(
+  { $or: [
+    { "grades.grade": 'A' },
+    { "grades.grade": 'B' },
+  ]},
+  { _id: 0, name: 1 }
+);
+```
+
+Find the name of all restaurants with at least 1 score above 20
+
+```javascript
+db.restaurants.find(
+  { "grades.score": { $gt: 20 } },
+  { _id: 0, name: 1 }
+);
+
+```
+
+Find the unique types of cuisine in restaurants in the Bronx
+
+```javascript
+db.restaurants.distinct("cuisine");
+```
+
+Find all the names and addresses of all the spanish restaurants in Queens
+
+```javascript
+db.restaurants.find(
+  { $and: [
+    { cuisine: "Spanish" },
+    { borough: "Queens" }
+  ]},
+  { _id: 0, name: 1, address: 1 }
+);
+```
+
+Find all the names and addresses of all the restaurants in Manhattan that are not a Bakery, Spanish, Italian or Irish
+
+```javascript
+db.restaurants.find(
+  { $and: [
+    { borough: 'Manhattan' },
+    { $nor: [
+      { cuisine: 'Bakery' },
+      { cuisine: 'Spanish' },
+      { cuisine: 'Italian' },
+      { cuisine: 'Irish' },
+    ]}
+  ]},
+  { _id: 0, name: 1, address: 1 }
+);
+```
+
+Find the name and address of the first alphabetically named Asian restaurant a grade of A
+
+```javascript
+
+```
