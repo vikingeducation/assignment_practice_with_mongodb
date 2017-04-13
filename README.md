@@ -98,37 +98,84 @@ db.products.update({
 
 Change the price of all the products in the "Hardware" department to be $10 less than their current price
 
-db.products.update({
-  department: "Hardware"},
-  {$inc:{price:-10}},
-  { multi: true }
-  );
+    db.products.update({
+      department: "Hardware"},
+      {$inc:{price:-10}},
+      { multi: true }
+      );
 
 Change the sales of all the products in the "Hardware" department to be at most 10
 
-db.products.update({
-  department: "Hardware"},
-  {$min:{sales:10}},
-  { multi: true }
-  );
+    db.products.update({
+      department: "Hardware"},
+      {$min:{sales:10}},
+      { multi: true }
+    );
 
 
   Remove the first product in the "Hardware" department
-  db.products.remove(
-    {department:"Hardware"},
-    {justOne: true}
-    );
+    db.products.remove(
+      {department:"Hardware"},
+      {justOne: true}
+      );
   Remove all products in the "Hardware" department
 
-  db.products.remove(
-    {department:"Hardware"}
-    );
+    db.products.remove(
+      {department:"Hardware"}
+      );
 
 Find the names of all the products that are out of stock
 
-  db.products.find(
-    {stock : 0}
-    ).pretty();
+    db.products.find(
+      {stock : 0}
+      ).pretty();
+
+Find the stock count of all the products with a price below $100
+
+    db.products.aggregate([
+      { $match: {price: {$lt: 100}}},
+      { $group: {_id: 'Stock Count', stock_count: { $sum: '$stock'}}},
+      { $project: {_id:0, stock_count:1}}
+    ]);
+
+Find the name, color and department of all the products with a price between $100 and $1000
+
+    db.products.find({
+      price: {$gt: 100, $lt: 1000}
+    });
+    
+Find the names of all the red products
+
+    db.products.find({
+      color: "red"
+      });
+
+Find only the IDs of all the red and blue products
+
+    db.products.find({
+      $or: [
+       {color: "red"},
+       {color: "blue"}
+       ]
+      });
+
+Find the names of all the products that are not red or blue
+
+    db.products.find({
+      $and: [
+       {color: {$ne: "red"}},
+       {color: {$ne: "blue"}}
+       ]
+      });
+
+
+Find the names of all the products that are not in the Sports or Games departments
+Find the name and price of all the products with names that begin with the letter F and end with the letter S and ignore case
+Using $where, find all the product names that begin with T
+Using $where, find all the product names that begin with capital F or end with lowercase S
+Using $where, find all the product names that begin with capital T and have a price less than $100
+Using $where, find all the product names and prices of products that either start with A and have a price of at least $100 or start with B and have a price of at most $100
+
 
 ## Restaurants
 
