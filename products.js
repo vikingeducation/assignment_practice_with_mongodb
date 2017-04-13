@@ -109,6 +109,7 @@ db.products.remove(
 
 ###############################################################
 // Finding Products
+
 // Find the names of all the products that are out of stock
 db.products.find(
   { stock: 0 },
@@ -120,7 +121,6 @@ db.products.find(
   { price: {$lt: 100} },
   { stock: 1, _id: 0 }
 );
-
 
 // Find the name, color and department of all the products with a price between $100 and $1000
 db.products.find(
@@ -134,7 +134,6 @@ db.products.find(
   { name: 1, _id: 0 }
 );
 
-
 // Find only the IDs of all the red and blue products
 db.products.find(
   {$or: [
@@ -143,7 +142,6 @@ db.products.find(
       ]
   }, { _id: 1 }
 );
-
 
 // Find the names of all the products that are not red or blue
 db.products.find(
@@ -154,13 +152,11 @@ db.products.find(
   }, { _id: 0, name: 1 }
 );
 
-
 // Find the names of all the products that are not in the Sports or Games departments
 db.products.find(
   { department: {$nin: ["Sports", "Games"]} },
   { name: 1, _id: 0 }
 );
-
 
 // Find the name and price of all the products with names that begin with the letter F and end with the letter S and ignore case
 METHOD1:
@@ -178,14 +174,11 @@ db.products.find(
   { _id: 0, name: 1, price: 1 }
 );
 
-
-
 // Using $where, find all the product names that begin with T
 db.products.find(
   { $where: "/^T/.test(this.name)" },
   { _id: 0, name: 1 }
 );
-
 
 // Using $where, find all the product names that begin with capital F or end with lowercase S
 db.products.find(
@@ -193,13 +186,11 @@ db.products.find(
   { _id: 0, name: 1 }
 );
 
-
 // Using $where, find all the product names that begin with capital T and have a price less than $100
 db.products.find(
   { $where: "/^T/.test(this.name) && this.price < 100" },
   { _id: 0, name: 1 }
 );
-
 
 // Using $where, find all the product names and prices of products that either start with A and have a price of at least $100 or start with B and have a price of at most $100
 db.products.find(
@@ -207,5 +198,72 @@ db.products.find(
   { _id: 0, name: 1, price: 1 }
 );
 
+###############################################################
+// Aggregating Products
+##################
+//With the Aggregation Pipeline
+// For each of these challenges use the Aggregation Pipeline to create a query that returns the described results.
 
+// Find the total number of sales each department made and sort the results by the department name
+db.products.aggregate([
+  { $group: { _id: "$department", Total_Sales: { $sum: "$sales" } } },
+  { $sort: { _id: 1 } }
+]);
 
+// Find the total number of sales each department made of a product with a price of at least $100 and sort the results by the department name
+db.products.aggregate([
+  { $match: { price: { $gte: 100 } } },
+  { $group: { _id: "$department", Total_Sales: { $sum: "$sales" } } },
+  { $sort: { _id: 1 } }
+]);
+
+// Find the number of out of stock products in each department and sort the results by the department name
+db.products.aggregate([
+  { $match: { stock: 0 } },
+  { $group: { _id: "$department", out_of_stock: { $sum: 1 } } },
+  { $sort: { _id: 1 } }
+]);
+##################
+// With Map-Reduce
+// For each of these challenges use the Map-Reduce to create a query that returns the described results.
+
+// Find the number of products with each color
+db.products.mapReduce(
+  function() { emit(this.color, this.name); },
+  function(keys, values) { return Array.sum(1); },
+  {
+    query: {},
+    out: "number_of_products_with_colors"
+  }
+).find();
+
+// Find the total revenue of each department (how much did each department make in sales?)
+db.products.mapReduce(
+  function() { emit(this.subject, this.score); },
+  function(keys, values) { return Array.sum(values); },
+  {
+    query: {},
+    out: "score_totals_by_subject"
+  }
+).find();
+// Find the potential revenue of each product (how much can each product make if the entire remaining stock is sold?)
+
+// Find the sum of the total and potential revenue for each product
+
+##################
+// With Single Purpose Aggregation Operations
+// For each of these challenges use the Single Purpose Aggregation Operations to create a query that returns the described results.
+
+// How many products are there?
+
+// How many products are out of stock?
+
+// How many products are fully stocked? (100)
+
+// How many products are almost out of stock? (>= 5)
+
+// What are all the unique names of all the departments?
+
+// What are all the unique names of product colors?
+
+// Find the total number of out of stock products for each department using the db.collection.group() method
