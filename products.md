@@ -20,7 +20,6 @@ db.products.insert({
 
 Insert the following products in a single query
 
--
 name: "Screwdriver"
 price: 19.99
 department: "Hardware"
@@ -28,7 +27,6 @@ color: "green"
 sales: 75
 stock: 50
 
--
 name: "Wrench"
 price: 21.99
 department: "Hardware"
@@ -83,9 +81,9 @@ Update the sales of all the products in the "Hardware Tools" department to be at
 db.products.updateMany(
   {$and: [
     { department: 'Hardware Tools' },
-    { sales: { $lt: 76 } }
+    { sales: { $lt: 50 } }
   ]},
-  {$set: {sales: 76}}
+  {$set: {sales: 50}}
 );
 ```
 
@@ -420,10 +418,4 @@ db.restaurants.find(
   ]},
   { _id: 0, name: 1, address: 1 }
 );
-```
-
-Find the name and address of the first alphabetically named Asian restaurant a grade of A
-
-```javascript
-
 ```
