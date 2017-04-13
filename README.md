@@ -68,14 +68,67 @@ Change the price of all products in the "Hardware Tools" department to cost $10 
 
     db.products.update({
       department: "Hardware Tools"},
-      { $inc: {price: 10}},
+      {$inc:{price:10}},
       { multi: true }
       );
 
+
+
+
 Update the sales of all the products in the "Hardware Tools" department to be at least 50
+
+
+db.products.update({
+  department: "Hardware Tools"},
+  {$max: {price: 50}},
+  { multi: true }
+  );
+
+
 Change the department of all the products in the "Hardware Tools" department to be "Hardware" again
+
+db.products.update({
+  department: "Hardware Tools"},
+  {$set : {department:"Hardware"}},
+  { multi: true }
+  );
+
+
+
+
 Change the price of all the products in the "Hardware" department to be $10 less than their current price
+
+db.products.update({
+  department: "Hardware"},
+  {$inc:{price:-10}},
+  { multi: true }
+  );
+
 Change the sales of all the products in the "Hardware" department to be at most 10
+
+db.products.update({
+  department: "Hardware"},
+  {$min:{sales:10}},
+  { multi: true }
+  );
+
+
+  Remove the first product in the "Hardware" department
+  db.products.remove(
+    {department:"Hardware"},
+    {justOne: true}
+    );
+  Remove all products in the "Hardware" department
+
+  db.products.remove(
+    {department:"Hardware"}
+    );
+
+Find the names of all the products that are out of stock
+
+  db.products.find(
+    {stock : 0}
+    ).pretty();
 
 ## Restaurants
 
@@ -86,6 +139,3 @@ Import the data from the `__restaurants__.js` file.
 ```bash
 $ mongoimport --db test --collection products --file __restaurants__.js
 ```
-
-
-
