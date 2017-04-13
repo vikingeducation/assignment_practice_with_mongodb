@@ -25,7 +25,7 @@ Restaurant data is imported from the MongoDB test database provide [here](https:
 Import the data from the `__restaurants__.js` file.
 
 ```bash
-$ mongoimport --db test --collection products --file __restaurants__.js
+$ mongoimport --db test --collection restaurants --file __restaurants__.js
 ```
 
 
