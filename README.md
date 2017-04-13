@@ -143,7 +143,7 @@ Find the name, color and department of all the products with a price between $10
     db.products.find({
       price: {$gt: 100, $lt: 1000}
     });
-    
+
 Find the names of all the red products
 
     db.products.find({
@@ -170,9 +170,35 @@ Find the names of all the products that are not red or blue
 
 
 Find the names of all the products that are not in the Sports or Games departments
+
+  db.products.find({
+    $and: [
+     {department: {$ne: "Sports"}},
+     {department: {$ne: "Games"}}
+     ]
+    });
+
+
 Find the name and price of all the products with names that begin with the letter F and end with the letter S and ignore case
+
+    db.products.find({
+      $and: [
+        { name: { $regex: /^F/ , $options: 'i'} },
+        { name: { $regex: /S$/ , $options: 'i'} }
+      ]
+    });
+
+
 Using $where, find all the product names that begin with T
+
+db.products.find({
+  $where : "this.name  == /^T/"
+});
+
+
 Using $where, find all the product names that begin with capital F or end with lowercase S
+
+
 Using $where, find all the product names that begin with capital T and have a price less than $100
 Using $where, find all the product names and prices of products that either start with A and have a price of at least $100 or start with B and have a price of at most $100
 
