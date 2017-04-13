@@ -1,5 +1,8 @@
 # assignment_practice_with_mongodb
 
+Nicholas Romeo
+Jerry Gao
+
 
 Querying with the MongoDB shell
 
@@ -27,6 +30,3 @@ Import the data from the `__restaurants__.js` file.
 ```bash
 $ mongoimport --db test --collection products --file __restaurants__.js
 ```
-
-
-
