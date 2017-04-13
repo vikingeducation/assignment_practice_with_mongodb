@@ -235,7 +235,7 @@ Aggregating
 Find the total number of sales each department made and sort the results by the department name
 
     db.products.aggregate([{
-      $group: { _id: "$department", sum: { $sum: "$sales" } }
+      $group: { _ id: "$department", sum: { $sum: "$sales" } }
     }]);
 
 
@@ -243,7 +243,7 @@ Find the total number of sales each department made of a product with a price of
 
     db.products.aggregate([
       { $match: { price: {$gte: 100}}},
-      { $group: { _id: "$department", sum: { $sum: "$sales" }}},
+      { $group: { _ i d: "$department", sum: { $sum: "$sales" }}},
       { $sort: {_id:1} }
     ]);
 
@@ -251,7 +251,7 @@ Find the number of out of stock products in each department and sort the results
 
     db.products.aggregate([
       { $match: { stock: 0}},
-      { $group: { _id: "$department", sum: { $sum: 1 }}},
+      { $group: { _ id: "$department", sum: { $sum: 1 }}},
       { $sort: {_id:1} }
     ]);
 
@@ -260,18 +260,86 @@ Map-Reduce
 
 Find the number of products with each color
 
-    db.students.mapReduce(
-      function() { emit(this.color, this.score); },
+    db.products.mapReduce(
+      function() { emit(this.color, 1); },
       function(keys, values) { return Array.sum(values); },
       {
         query: {},
-        out: "score_totals_by_subject"
+        out: "products by color"
       }
     ).find();
 
 Find the total revenue of each department (how much did each department make in sales?)
+
+db.products.mapReduce(
+  function() { emit(this.department, this.sales * this.price); },
+  function(keys, values) { return Array.sum(values); },
+  {
+    query: {},
+    out: "Sales by department"
+  }
+).find();
+
+
 Find the potential revenue of each product (how much can each product make if the entire remaining stock is sold?)
+
+db.products.mapReduce(
+  function() { emit(this.department, this.stock * this.price); },
+  function(keys, values) { return Array.sum(values); },
+  {
+    query: {},
+    out: "Potential sales by department"
+  }
+).find();
+
+
 Find the sum of the total and potential revenue for each product
+
+db.products.mapReduce(
+  function() { emit(this.department, this.stock * this.price + this.sales * this.price); },
+  function(keys, values) { return Array.sum(values); },
+  {
+    query: {},
+    out: "Potential and actual sales by department"
+  }
+).find();
+
+
+How many products are there?
+
+db.products.count();
+
+How many products are out of stock?
+
+db.products.count({stock : 0});
+
+How many products are fully stocked? (100)
+
+db.products.count({stock : 100});
+
+How many products are almost out of stock? (>= 5)
+
+db.products.count({stock : {$lte:5}});
+
+What are all the unique names of all the departments?
+
+db.products.distinct('department');
+
+What are all the unique names of product colors?
+
+db.products.distinct('color');
+
+Find the total number of out of stock products for each department using the db.collection.group() method
+
+db.products.group({
+  key: { department: ''},
+  cond: { stock: 0 },
+  reduce: function(cur, result) { result.count += 1; },
+  initial: { count: 0 }
+});
+
+
+
 
 ## Restaurants
 
