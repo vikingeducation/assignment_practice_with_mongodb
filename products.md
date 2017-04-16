@@ -1,3 +1,5 @@
+## Products
+
 Insert a product with the following properties
 
 name: "Hammer"
@@ -350,72 +352,4 @@ db.products.mapReduce(
     out: "ProductPotentialRevenue"
   }
 ).find();
-```
-
-### Restaurants
-
-Find the first 5 restaurants returning only the name
-
-```javascript
-db.restaurants.find(
-  {},
-  { _id: 0, name: 1 }
-).limit(5);
-```
-
-Find the name of all restaurants with at least 1 grade of A or B
-
-```javascript
-db.restaurants.find(
-  { $or: [
-    { "grades.grade": 'A' },
-    { "grades.grade": 'B' },
-  ]},
-  { _id: 0, name: 1 }
-);
-```
-
-Find the name of all restaurants with at least 1 score above 20
-
-```javascript
-db.restaurants.find(
-  { "grades.score": { $gt: 20 } },
-  { _id: 0, name: 1 }
-);
-
-```
-
-Find the unique types of cuisine in restaurants in the Bronx
-
-```javascript
-db.restaurants.distinct("cuisine");
-```
-
-Find all the names and addresses of all the spanish restaurants in Queens
-
-```javascript
-db.restaurants.find(
-  { $and: [
-    { cuisine: "Spanish" },
-    { borough: "Queens" }
-  ]},
-  { _id: 0, name: 1, address: 1 }
-);
-```
-
-Find all the names and addresses of all the restaurants in Manhattan that are not a Bakery, Spanish, Italian or Irish
-
-```javascript
-db.restaurants.find(
-  { $and: [
-    { borough: 'Manhattan' },
-    { $nor: [
-      { cuisine: 'Bakery' },
-      { cuisine: 'Spanish' },
-      { cuisine: 'Italian' },
-      { cuisine: 'Irish' },
-    ]}
-  ]},
-  { _id: 0, name: 1, address: 1 }
-);
 ```
