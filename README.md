@@ -4,6 +4,10 @@
 Querying with the MongoDB shell
 
 
+DAVID WIESENBEREG
+
+**********************************************
+
 ## Getting Started
 
 **IMPORTANT** don't run `__seeds__.js`. It is there only to generate `__products__.js` in the case that it **MUST** be regenerated. Regenerating that data will make query results different across instances of this assignment.
