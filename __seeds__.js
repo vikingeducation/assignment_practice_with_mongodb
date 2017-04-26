@@ -7,7 +7,6 @@
 var fs = require('fs');
 var faker = require('faker'); //<< Must be installed globally with NPM
 
-
 var createProduct = () => {
   return {
     name: faker.commerce.productName(),
