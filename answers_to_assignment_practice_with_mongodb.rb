@@ -1,5 +1,7 @@
 answers_to_assignment_practice_with_mongodb.js 
 
+PRODUCTS
+
 Inserting Products
 ------------------
 
@@ -115,25 +117,25 @@ db.products.find(
 
 4. 
 db.products.find(
-  {color: red},
+  {color: "red"},
   {_id: 0, name: 1, color: 1}
   );
 
 5.
 db.products.find(
-  {color: {red, blue}},
+  {color: {$in: ["red", "blue"]}},
   {name: 1, color: 1}
   );
 
 6.
 db.products.find(
-  {color: {$ne: {red, blue}} }
+  {color: {$nin: ["red", "blue"]}},
   {_id: 0, name: 1, color: 1}
   );
 
 7.
 db.products.find(
-  {department: {$ne: {"Sports", "Games"}} },
+  {department: {$nin: ["Sports", "Games"]}},
   {name: 1, department: 1}
   );
 
@@ -277,6 +279,71 @@ db.products.group({
   reduce: function(cur, result) {result.count += 1; },
   initial: { count: 0 }
   });
-**** Do not understand ...
+
+RESTAURANTS
+
+1. 
+db.restaurants.find(
+  {},
+  {_id: 0, name: 1},
+  {$limit: 5}
+  );
+
+2.
+db.restaurants.find(
+  {grades.grade: {$in: ['A', 'B']},   
+  {_id: 0, name: 1}
+  );
+
+3.
+db.restaurants.find(
+  {grades.score: {$gt: {20}},   
+  {_id: 0, name: 1}
+  );
+
+4.
+db.restaurants.distinct('cuisine', {borough: "Bronx"});
+
+5.
+db.restaurants.find(
+  {cuisine: 'Spanish', borough: 'Queens'},   
+  {_id: 0, name: 1, address: 1}
+  );
+
+6.
+db.restaurants.find(
+  {cuisine: {$nin ['Bakery','Spanish', 'Itlian', 'Irish']}, borough: 'Manhattan'},   
+  {_id: 0, name: 1, address: 1}
+  );
+
+7.
+db.restaurants.find(
+  {{cuisine: 'Asian'}, {grades.grade: 'A'}},   
+  {_id: 0, name: 1, address: 1},
+  {limit: 1}
+  ).sort({name: 1});
+
+Aggregating Restaurants
+-----------------------
+
+1.
+db.restaurants.aggregate([{
+  $group: { _id: "$address.zipcode", sum: { $sum: 1 } }
+}]);
+
+db.restaurants.mapReduce(
+  function() { emit(this.address.zipcode, 1); },
+  function(keys, values) { return Array.sum(values); },
+  {
+    query: {},
+    out: "restaurant total_by_zipcode"
+  }
+).find();
+
+2.
+db.restaurants.distinct('name', {grades.grade: {$in: ['A', 'B']}}).
+  sort({name: -1});
+
+
 
 
