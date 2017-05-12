@@ -270,7 +270,7 @@ db.products.mapReduce(
 // 3.  Find the potential revenue of each product (how much can each product make if the entire remaining stock is sold?)
 
 db.products.mapReduce(
-  function() { emit(this.name, this.price * (this.sales + this.stock)) },
+  function() { emit(this.name, this.price * this.stock) },
   function(key, value) { return Array.sum(value) },
   {
     query: {},
@@ -278,12 +278,55 @@ db.products.mapReduce(
   } 
 ).find();
 
+// 4.  Find the sum of the total and potential revenue for each product
 
+db.products.mapReduce(
+  function() { emit(this.name, this.price * (this.stock + this.sales)) },
+  function(key, value) { return Array.sum(value) },
+  {
+    query: {},
+    out: "potential revenue of each product"
+  } 
+).find();
 
+// SINGLE PURPOSE AGGREGATION
 
+// 1.  How many products are there?
 
+db.products.count();
 
+// 2.  How many products are out of stock?
 
+db.products.count( { stock: 0 } );
+
+// 3.  How many products are fully stocked? (100)
+
+db.products.count( { stock: 100 } );
+
+// 4.  How many products are almost out of stock? (<=5)
+
+db.products.count( { stock: { $lte: 5 }});
+
+// 5.  What are all the unique names of all the departments?
+
+db.products.distinct("department");
+
+// 6.  What are all the unique names of product colors?
+
+db.products.distinct("color");
+
+// 7.  Find the total number of out of stock products for each department using the db.collection.group() method
+
+db.products.group(
+  {
+    key: { department: 1},
+    cond: { stock: 0 },
+    reduce: function( curr, result) {
+      result.total += 1;
+    },
+    initial: { total: 0 }
+  }
+);
 
 
 
