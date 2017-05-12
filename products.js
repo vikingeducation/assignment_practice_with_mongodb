@@ -214,6 +214,79 @@ db.products.find(
   { _id: 0, name: 1, price: 1}
 );
 
+// AGGREGATE
+// With aggregation pipeline
+
+// 1. Find the total number of sales each department made and sort the results by the department name
+
+db.products.aggregate([
+    { $group: { _id: "$department", total_sales: { $sum: "$sales" } } },
+    { $sort: { department: 1 } }
+  ]
+);
+
+// 2. Find the total number of sales each department made of a product with a price of at least $100 and sort the results by the department name
+
+db.products.aggregate([
+    { $match: { price: { $gte: 100 } } },
+    { $group: { _id: "$department", total_sales: { $sum: "$sales" } } },
+    { $sort: { department: 1 } }
+  ]
+);
+
+// 3.  Find the number of out of stock products in each department and sort the results by the department name
+
+db.products.aggregate([
+    { $match: { stock: 0 } },
+    { $group: { _id: "$department", count: { $sum: 1 } } },
+    { $sort: { department: 1} }
+  ]
+);
+
+// With mapReduce
+
+// 1.  Find the number of products with each color
+
+db.products.mapReduce(
+  function() { emit(this.color, 1) },
+  function(key, values) { return Array.sum(values) },
+  {
+    query: {},
+    out: "number of products in each color"
+  }
+).find();
+
+// 2. Find the total revenue of each department (how much did each department make in sales?)
+
+db.products.mapReduce(
+  function() { emit(this.department, this.sales * this.price) },
+  function(key, values) { return Array.sum(values)},
+  {
+    query: {},
+    out: "total revenue by department"
+  }
+).find();
+
+// 3.  Find the potential revenue of each product (how much can each product make if the entire remaining stock is sold?)
+
+db.products.mapReduce(
+  function() { emit(this.name, this.price * (this.sales + this.stock)) },
+  function(key, value) { return Array.sum(value) },
+  {
+    query: {},
+    out: "potential revenue of each product"
+  } 
+).find();
+
+
+
+
+
+
+
+
+
+
 
 
 
