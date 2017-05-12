@@ -105,16 +105,114 @@ db.products.update(
   { $inc: { sales: 1} }
 );
 
+// REMOVE
 
+// 1.  Remove the first product in the "Hardware" department
 
+db.products.remove(
+  { department: "Hardware"},
+  { justOne: true }
+);
 
+// 2.  Remove all products in the "Hardware" department
 
+db.products.remove(
+  { department: "Hardware"}  
+);
 
+// FIND
 
+// 1.  Find the names of all the products that are out of stock
 
+db.products.find(
+  { stock: 0 },
+  { _id: 0, name: 1}
+);
 
+// 2.  Find the stock count of all the products with a price below $100
 
+db.products.find(
+  { price: { $lt: 100 } }
+).count()
 
+// 3.  Find the name, color and department of all the products with a price between $100 and $1000
+
+db.products.find(
+  { price: { $gte: 100, $lte: 1000} },
+  { _id: 0, name: 1, color: 1, department: 1 }
+);
+
+// 4.  Find the names of all the red products
+
+db.products.find(
+  { color: "red" },
+  { _id: 0, name: 1 }
+);
+
+// 5.  Find only the IDs of all the red and blue products
+
+db.products.find(
+  { $or: [
+      { color: "red" },
+      { color: "blue" }
+    ]
+  },
+  { _id: 1 }
+);
+
+// 6.  Find the names of all the products that are not red or blue
+
+db.products.find(
+  { color: { $nin: ["red", "blue"] } },
+  { _id: 0, name: 1 }
+);
+
+// 7.  Find the names of all the products that are not in the Sports or Games departments
+
+db.products.find(
+  { department: { $nin: ["Sports", "Games"] } },
+  { _id: 0, name: 1 }
+);
+
+// 8.  Find the name and price of all the products with names that begin with the letter F and end with the letter S and ignore case
+
+db.products.find(
+  {
+    $and: [
+      { name: { $regex: /^f/, $options: "i"} },
+      { name: { $regex: /s$/ } }
+    ]
+  },
+  { _id: 0, name: 1, price: 1 }
+);
+
+// 9.  Using $where, find all the product names that begin with T
+
+db.products.find(
+  { $where: "this.name >= 'T' && this.name < 'U'" },
+  { _id: 0, name: 1 }
+);
+
+// 10.  Using $where, find all the product names that begin with capital F or end with lowercase S
+
+db.products.find(
+  { name: {$type: 2 }, $where: "this.name[0] == 'F' || this.name.endsWith('s')" },
+  { _id: 0, name: 1 }
+);
+
+// 11. Using $where, find all the product names that begin with capital T and have a price less than $100
+
+db.products.find(
+  { name: { $type: 2 }, $where: "this.name[0] == 'T' && this.price < 100" },
+  { _id: 0, name: 1 }
+);
+
+// 12. Using $where, find all the product names and prices of products that either start with A and have a price of at least $100 or start with B and have a price of at most $100
+
+db.products.find(
+  { name: { $type: 2 }, $where: "(this.name[0] == 'A' && this.price >= 100) || (this.name[0] == 'B' && this.price <= 100)" },
+  { _id: 0, name: 1, price: 1}
+);
 
 
 
