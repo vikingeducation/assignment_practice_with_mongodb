@@ -3,6 +3,7 @@
 
 Querying with the MongoDB shell
 
+Name: Christian Florez
 
 ## Getting Started
 
