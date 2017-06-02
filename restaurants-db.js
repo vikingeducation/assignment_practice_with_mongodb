@@ -86,6 +86,6 @@ db.restaurants.aggregate([
     { 'grades.grade': "A" },
     { 'grades.grade': "B" },
   ]}},
-  { $sort: { name: -1 } },
-  { $project: { _id: 0, name: 1}}
+  { $group: { _id: '$name'}},
+  { $sort: { _id: -1 } }
 ]);
