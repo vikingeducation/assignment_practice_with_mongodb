@@ -96,6 +96,47 @@ db.products.find(
 // 4. Find the names of all the red products
 db.products.find({ color: "red" }, { _id: 0, name: 1 });
 
+//5. Find only the IDs of all the red and blue products
+db.products.find(
+  {
+    $or: [{ color: "red" }, { color: "blue" }]
+  },
+  { _id: 1 }
+);
+//6 Find the names of all the products that are not red or blue
+db.products.find(
+  {
+    $nor: [{ color: "red" }, { color: "blue" }]
+  },
+  { _id: 0, name: 1 }
+);
+//7 Find the names of all the products that are not in the Sports or Games departments
+db.products.find(
+  {
+    $nor: [{ department: "Sports" }, { department: "Games" }]
+  },
+  { _id: 0, name: 1 }
+);
+
+// 8 Find the name and price of all the products with names that begin with the letter F and end with the letter S and ignore case
+db.products.find(
+  {
+    name: { $regex: /^F.*S$/, $options: "i" }
+  },
+  { _id: 0, name: 1, price: 1 }
+);
+
+// 9 Using $where, find all the product names that begin with T
+db.products.find(
+  {
+    $where: function() {}
+  },
+  {
+    _id: 0,
+    name: 1
+  }
+);
+
 // db.products.find({ department: "Hardware Tools" })
 
 // db.products.update(
