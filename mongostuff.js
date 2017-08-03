@@ -81,6 +81,7 @@ db.products.update(
   { $inc: { sales: 1 } }
 )
 
+// REMOVING PRODUCTS
 
 // 1.
 db.products.remove(
@@ -146,7 +147,7 @@ db.products.find(
 
 // 9.
 db.products.find(
-  { $where: "this.name[0] === 'T'" },
+  { $where: "this.name[0].toLowerCase() === 't'" },
   { _id: 0, name: 1}
 )
 
