@@ -172,6 +172,21 @@ db.products.find(
   }
 );
 
+// Aggregating
+
+// 1. Find the total number of sales each department made and sort the results by the department name
+db.products.aggregate([
+  { $group: { _id: "$department", sum: { $sum: "$sales" } } },
+  { $sort: { _id: 1 } }
+]);
+
+// 2. Find the total number of sales each department made of a product with a price of at least $100 and sort the results by the department name
+db.products.aggregate([
+  { $match: { price: { $gte: 100 } } },
+  { $group: { _id: "$department", sum: { $sum: "$sales" } } },
+  { $sort: { _id: 1 } }
+]);
+
 // db.products.find({ department: "Hardware Tools" })
 
 // db.products.update(
