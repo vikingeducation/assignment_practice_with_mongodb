@@ -80,6 +80,22 @@ db.products.remove({ department: "Hardware" }, { justOne: true });
 // 2. Remove all products in the "Hardware" department
 db.products.remove({ department: "Hardware" });
 
+// Finding
+// 1. Find the names of all the products that are out of stock
+db.products.find({ stock: 0 }, { _id: 0, name: 1 });
+
+// 2. Find the stock count of all the products with a price below $100
+db.products.find({ price: { $lt: 100 } }, { _id: 0, name: 1, stock: 1 });
+
+// 3. Find the name, color and department of all the products with a price between $100 and $1000
+db.products.find(
+  { price: { $gt: 100, $lt: 1000 } },
+  { _id: 0, name: 1, color: 1, department: 1 }
+);
+
+// 4. Find the names of all the red products
+db.products.find({ color: "red" }, { _id: 0, name: 1 });
+
 // db.products.find({ department: "Hardware Tools" })
 
 // db.products.update(

@@ -999,5 +999,3 @@
 {"_id":{"$oid":"598389f58f3be14e03f70343"},"name":"Ergonomic Metal Gloves","price":436,"department":"Movies","color":"black","sales":92,"stock":59}
 {"_id":{"$oid":"598389f58f3be14e03f70344"},"name":"Gorgeous Metal Mouse","price":33,"department":"Home","color":"violet","sales":4,"stock":89}
 {"_id":{"$oid":"59838d090301414a508ce358"},"department":"Dank Memes"}
-{"_id":{"$oid":"59838da90301414a508ce359"},"name":"Screwdriver","price":29.99,"department":"Hardware Tools","color":"green","sales":75.0,"stock":50.0}
-{"_id":{"$oid":"59838da90301414a508ce35a"},"name":"Wrench","price":31.99,"department":"Hardware Tools","color":"orange","sales":70.0,"stock":50.0}
