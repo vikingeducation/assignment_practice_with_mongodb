@@ -2,7 +2,7 @@
 //	Inserting Products
 //////////////////////////
 
-1;
+//1
 
 db.products.insert({
 	name: "Hammer",
@@ -13,7 +13,7 @@ db.products.insert({
 	stock: 50
 });
 
-2;
+//2
 
 db.products.insert([
 	{
@@ -38,7 +38,7 @@ db.products.insert([
 //	Updating Products
 //////////////////////////
 
-1;
+//1
 
 db.products.update(
 	{ department: "Hardware" },
@@ -46,7 +46,7 @@ db.products.update(
 	{ multi: true }
 );
 
-2;
+//2
 
 db.products.update(
 	{ department: "Hardware Tools" },
@@ -54,7 +54,7 @@ db.products.update(
 	{ multi: true }
 );
 
-3;
+//3
 
 db.products.update(
 	{
@@ -65,7 +65,7 @@ db.products.update(
 	{ multi: true }
 );
 
-4;
+//4
 
 db.products.update(
 	{ department: "Hardware Tools" },
@@ -73,7 +73,7 @@ db.products.update(
 	{ multi: true }
 );
 
-5;
+//5
 
 db.products.update(
 	{ department: "Hardware" },
@@ -81,7 +81,7 @@ db.products.update(
 	{ multi: true }
 );
 
-6;
+//6
 
 db.products.update(
 	{
@@ -92,7 +92,7 @@ db.products.update(
 	{ multi: true }
 );
 
-7;
+//7
 
 db.products.update({ department: "Hardware" }, { $inc: { sales: 1 } });
 
@@ -100,11 +100,11 @@ db.products.update({ department: "Hardware" }, { $inc: { sales: 1 } });
 //	Removing Products
 //////////////////////////
 
-1;
+//1
 
 db.products.remove({ department: "Hardware" }, { justOne: true });
 
-2;
+//2
 
 db.products.remove({ department: "Hardware" });
 
@@ -112,15 +112,15 @@ db.products.remove({ department: "Hardware" });
 //	Finding Products
 //////////////////////////
 
-1;
+//1
 
 db.products.find({ stock: 0 }, { _id: 0, name: 1 });
 
-2;
+//2
 
 db.products.find({ price: { $lt: 100 } }, { _id: 0, stock: 1 });
 
-3;
+//3
 
 db.products.find(
 	{
@@ -129,15 +129,15 @@ db.products.find(
 	{ _id: 0, name: 1, color: 1, department: 1 }
 );
 
-4;
+//4
 
 db.products.find({ color: "red" }, { _id: 0, name: 1 });
 
-5;
+//5
 
 db.products.find({ $or: [{ color: "red" }, { color: "blue" }] }, { id: 1 });
 
-6;
+//6
 
 db.products.find(
 	{
@@ -146,7 +146,7 @@ db.products.find(
 	{ _id: 0, name: 1 }
 );
 
-7;
+//7
 
 db.products.find(
 	{
@@ -155,7 +155,7 @@ db.products.find(
 	{ _id: 0, name: 1 }
 );
 
-8;
+//8
 
 db.products.find(
 	{
@@ -167,7 +167,7 @@ db.products.find(
 	{ _id: 0, name: 1, price: 1 }
 );
 
-9;
+//9
 
 db.products.find(
 	{
@@ -176,7 +176,7 @@ db.products.find(
 	{ _id: 0, name: 1 }
 );
 
-10;
+//10
 
 db.products.find(
 	{
@@ -185,7 +185,7 @@ db.products.find(
 	{ _id: 0, name: 1 }
 );
 
-11;
+//11
 
 db.products.find(
 	{
@@ -194,7 +194,7 @@ db.products.find(
 	{ _id: 0, name: 1 }
 );
 
-12;
+//12
 
 db.products.find(
 	{
@@ -208,21 +208,21 @@ db.products.find(
 //	Aggregation Pipeline
 //////////////////////////
 
-1;
+//1
 
 db.products.aggregate([
 	{ $group: { _id: "$department", totalSales: { $sum: "$sales" } } },
 	{ $sort: { _id: 1 } }
 ]);
 
-2;
+//2
 
 db.products.aggregate([
 	{ $group: { _id: "$department", totalSales: { $sum: "$sales" } } },
 	{ $sort: { _id: 1 } }
 ]);
 
-3;
+//3
 
 db.products.aggregate([
 	{ $match: { stock: 0 } },
@@ -230,11 +230,28 @@ db.products.aggregate([
 	{ $sort: { _id: 1 } }
 ]);
 
+db.products.aggregate([
+	{
+		$group: {
+			_id: "$department",
+			"Out of Stock": {
+				$sum: {
+					$cond: { if: { $eq: ["$stock", 0] }, then: 1, else: 0 }
+				}
+			}
+		}
+	},
+	{ $sort: { _id: 1 } }
+]);
+
+// $cond: { if: { $stock: 0 }, then: 1, else: 0 }
+//								^ THIS DOES NOT WORK
+
 //////////////////////////
 //	   mapReduce
 //////////////////////////
 
-1;
+//1
 
 db.products
 	.mapReduce(
@@ -251,7 +268,7 @@ db.products
 	)
 	.find({});
 
-2;
+//2
 
 db.products
 	.mapReduce(
@@ -265,7 +282,7 @@ db.products
 	)
 	.find({});
 
-3;
+//3
 
 db.products
 	.mapReduce(
@@ -279,7 +296,7 @@ db.products
 	)
 	.find({});
 
-4;
+//4
 
 db.products
 	.mapReduce(
@@ -297,29 +314,37 @@ db.products
 //	   Single-Purpose Aggregation Operations
 /////////////////////////////////////////////////
 
-1;
+//1
 
 db.products.count();
 
-2;
+//2
 
 db.products.find({ stock: 0 }).count();
 
-3;
+//3
 
 db.products.find({ stock: 100 }).count();
 
-4;
+//4
 
 db.products.find({ stock: { $lte: 5 } }).count();
 
-5;
+//5
 
 db.products.distinct("department");
 
-6;
+//6
 
 db.products.distinct("color");
 
-7;
+//7
 
+db.products.group({
+	key: { department: 1 },
+	cond: { stock: 0 },
+	reduce: function(cur, result) {
+		result.count += 1;
+	},
+	initial: { count: 0 }
+});
