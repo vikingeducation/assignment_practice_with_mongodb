@@ -129,11 +129,46 @@ db.products.find(
 // 9 Using $where, find all the product names that begin with T
 db.products.find(
   {
-    $where: function() {}
+    $where: "/^T.*/.test(this.name)"
   },
   {
     _id: 0,
     name: 1
+  }
+);
+
+// 10 Using $where, find all the product names that begin with capital F or end with lowercase S
+db.products.find(
+  {
+    $where: "/^F.*/.test(this.name) || /.*s$/.test(this.name)"
+  },
+  {
+    _id: 0,
+    name: 1
+  }
+);
+
+// 11 Using $where, find all the product names that begin with capital T and have a price less than $100
+db.products.find(
+  {
+    $where: "/^T.*/.test(this.name) && this.price < 100"
+  },
+  {
+    _id: 0,
+    name: 1
+  }
+);
+
+// 12 Using $where, find all the product names and prices of products that either start with A and have a price of at least $100 or start with B and have a price of at most $100
+db.products.find(
+  {
+    $where:
+      "(/^A.*/.test(this.name) && this.price > 100) || (/^B.*/.test(this.name) && this.price < 100)"
+  },
+  {
+    _id: 0,
+    name: 1,
+    price: 1
   }
 );
 
