@@ -73,6 +73,13 @@ db.products.update(
 // 7. Update the first product in the "Hardware" department to have one more sale
 db.products.update({ department: "Hardware" }, { $inc: { sales: 1 } });
 
+// Deletions
+// 1. Remove the first product in the "Hardware" department
+db.products.remove({ department: "Hardware" }, { justOne: true });
+
+// 2. Remove all products in the "Hardware" department
+db.products.remove({ department: "Hardware" });
+
 // db.products.find({ department: "Hardware Tools" })
 
 // db.products.update(
