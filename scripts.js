@@ -230,24 +230,32 @@ db.products
 db.products
   .mapReduce(
     function() {
-      emit(this.name, this.sales * this.stock);
+      emit(this.name, this.price * this.stock);
     },
     function(keys, values) {
       return Array.sum(values);
     },
     {
       query: {},
-      value: "Number of each color"
+      out: "Number of each color"
     }
   )
   .find();
 
-//{ $project: { sum: 1 } }
-// db.products.find({ department: "Hardware Tools" })
+//Find the sum of the total and potential revenue for each product
+db.products
+  .mapReduce(
+    function() {
+      emit(this.name, this.price * this.stock + this.price * this.sales);
+    },
+    function(keys, values) {
+      return Array.sum(values);
+    },
+    {
+      query: {},
+      out: "Number of each color"
+    }
+  )
+  .find();
 
-// db.products.update(
-//   {
-//     department: "Hardware Tools"
-//   },
-//   { department: "Dank Memes" }
-// );
+///
