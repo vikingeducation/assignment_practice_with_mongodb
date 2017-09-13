@@ -1,5 +1,7 @@
 # assignment_practice_with_mongodb
 
+## Sean Luckett
+
 
 Querying with the MongoDB shell
 
