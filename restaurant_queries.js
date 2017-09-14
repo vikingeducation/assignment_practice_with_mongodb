@@ -61,3 +61,33 @@ db.restaurants.find(
   { _id: 0, name: 1, address: 1 }
 ).sort({ name: 1 }).limit(1);
 
+// -----------------------
+// Aggregating restaurants
+// -----------------------
+
+// 1. List the number of restaurants under each zipcode
+db.restaurants.mapReduce(
+  function () {
+    emit(this.address.zipcode, 1);
+  },
+  function (k, v) {
+    return Array.sum(v);
+  },
+  { out: { inline: 1 } }
+);
+
+// 2. List unique names of all restaurants with at least 1 grade of A or B sorted in reverse alphabetical order
+db.restaurants.aggregate([
+  {
+    $match: {
+      $or: [
+        { 'grades.grade': 'A' },
+        { 'grades.grade': 'B' },
+      ]
+    }
+  },
+  { $sort: { name: 1 } },
+  {
+    $group: { _id: '$name' }
+  }
+]);
