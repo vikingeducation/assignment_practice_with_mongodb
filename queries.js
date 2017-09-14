@@ -231,3 +231,54 @@ db.products.aggregate([
   { $sort: { department: 1 } },
   { $group: { _id: '$department', productsNoStock: { $sum: 1 } } }
 ]);
+
+// ------------------------------------
+// Aggregating products with map-reduce
+// ------------------------------------
+
+// 1. Find the number of products with each color
+db.products.mapReduce(
+  function () {
+    emit(this.color, 1);
+  },
+  function (k, v) {
+    return Array.sum(v);
+  },
+  { out: { inline: 1 } }
+);
+
+// 2. Find the total revenue of each department (how much did each department make in sales?)
+db.products.mapReduce(
+  function () {
+    emit(this.department, (this.price * this.sales));
+  },
+  function (k, v) {
+    return Array.sum(v);
+  },
+  { out: { inline: 1 } }
+);
+
+// 3. Find the potential revenue of each product (how much can each product make if the entire remaining stock is sold?)
+db.products.mapReduce(
+  function () {
+    emit(this.name, this.price * this.stock);
+  },
+  function (k, v) {
+    return Array.sum(v);
+  },
+  { out: { inline: 1 } }
+);
+
+// 4. Find the sum of the total and potential revenue for each product
+db.products.mapReduce(
+  function () {
+    var revenue = this.price * this.sales;
+    var potentialRevenue = this.price * this.stock;
+
+    emit(this.name, revenue + potentialRevenue);
+  },
+  function (k, v) {
+    return v[0];
+  },
+  { out: { inline: 1 } }
+);
