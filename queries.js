@@ -282,3 +282,39 @@ db.products.mapReduce(
   },
   { out: { inline: 1 } }
 );
+
+// -------------------------
+// Aggregating products with
+// single-purpose operations
+// -------------------------
+
+// 1. How many products are there? 1000
+db.products.count();
+
+// 2. How many products are out of stock? 9
+db.products.count({ stock: 0 });
+
+// 3. How many products are fully stocked? (100) 6
+db.products.count({ stock: 100 });
+
+// 4. How many products are almost out of stock? (<=5) 56
+db.products.count({ stock: { $lte: 5 } });
+
+// 5. What are all the unique names of all the departments?
+db.products.distinct('department');
+
+// 6. What are all the unique names of product colors?
+db.products.distinct('color');
+
+// 7. Find the total number of out of stock products for each department using the db.collection.group() method
+// NOTE: this method is deprecated since Mongo 3.4
+db.products.group(
+  {
+    key: { department: 1 },
+    cond: { stock: 0 },
+    reduce: function (curr, result) {
+      result.total += 1
+    },
+    initial: { total: 0 }
+  }
+);
