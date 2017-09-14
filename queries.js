@@ -49,8 +49,8 @@ db.products.update(
 
 // 2. Change the price of all products in the "Hardware Tools" department to cost $10 more than their current price
 db.products.update(
-  { department: 'Hardware Tools'},
-  { $inc: { price: 1000 } },
+  { department: 'Hardware Tools' },
+  { $inc: { price: 10 } },
   { multi: true }
 );
 
@@ -71,7 +71,7 @@ db.products.update(
 // 5. Change the price of all the products in the "Hardware" department to be $10 less than their current price
 db.products.update(
   { department: 'Hardware' },
-  { $inc: { price: -1000 } },
+  { $inc: { price: -10 } },
   { multi: true }
 );
 
@@ -100,3 +100,134 @@ db.products.remove(
 
 // 2. Remove all products in the "Hardware" department
 db.products.remove({ department: 'Hardware' });
+
+// -------------------
+// Finding products
+// -------------------
+
+// 1. Find the names of all the products that are out of stock
+db.products.find({ stock: 0 });
+
+// 2. Find the stock count of all the products with a price below $100
+db.products.find(
+  { price: { $lt: 100 } },
+  { _id: 0, stock: 1 }
+);
+
+// 3. Find the name, color and department of all the products with a price between $100 and $1000
+db.products.find(
+  { price: { $gte: 100, $lte: 1000 } },
+  { _id: 0, name: 1, color: 1, department: 1 }
+);
+
+// 4. Find the names of all the red products
+db.products.find(
+  { color: { $regex: /^red/i } }, // mongo 3.4 allows 'i' modifier within regex
+  { _id: 0, name: 1 }
+);
+
+// 5. Find only the IDs of all the red and blue products
+db.products.find(
+  {
+    $or: [
+      { color: { $regex: /^red/i } },
+      { color: { $regex: /^blue/i } }
+    ]
+  },
+  { _id: 1 }
+);
+
+// 6. Find the names of all the products that are not red or blue
+db.products.find(
+  {
+    $and: [
+      { color: { $ne: 'red' } },
+      { color: { $ne: 'blue' } }
+    ]
+  },
+  { _id: 0, name: 1 }
+);
+
+// 7. Find the names of all the products that are not in the Sports or Games departments
+db.products.find(
+  {
+    $and: [
+      { department: { $ne: { $regex: /^Sports/i } } },
+      { department: { $ne: { $regex: /^Games/i } } }
+    ]
+  },
+  { _id: 0, name: 1 }
+);
+
+// 8. Find the name and price of all the products with names that begin with the letter F and end with the letter S and ignore case
+db.products.find(
+  {
+    $and: [
+      { name: { $regex: /^F/i } },
+      { name: { $regex: /S$/i } }
+    ]
+  },
+  { _id: 0, name: 1, price: 1 }
+);
+
+// 9. Using $where, find all the product names that begin with T
+db.products.find(
+  { $where: "this.name[0] === 'T'" },
+  { _id: 0, name: 1 }
+);
+
+// 10. Using $where, find all the product names that begin with capital F or end with lowercase S
+db.products.find(
+  { $where: "this.name[0] === 'F' || this.name.slice(-1) === 's'" },
+  { _id: 0, name: 1 }
+);
+
+// 11. Using $where, find all the product names that begin with capital T and have a price less than $100
+db.products.find(
+  { $where: 'this.name[0] === "T" && this.price < 100' },
+  { _id: 0, name: 1 }
+);
+
+// 12. Using $where, find all the product names and prices of products that either start with A and have a price of at least $100 or start with B and have a price of at most $100
+db.products.find(
+  { $where: '(this.name[0] === "A" && this.price >= 100) || (this.name[0] === "B" && this.price <= 100)' },
+  { _id: 0, name: 1, price: 1 }
+);
+
+// ----------------------------------
+// Aggregating products with pipeline
+// ----------------------------------
+
+// 1. Find the total number of sales each department made and sort the results by the department name
+db.products.aggregate([
+  {
+    $group: {
+      _id: '$department',
+      departmentSales: { $sum: '$sales' }
+    }
+  },
+  {
+    $sort: { department: 1 }
+  }
+]);
+
+// 2. Find the total number of sales each department made of a product with a price of at least $100 and sort the results by the department name
+db.products.aggregate([
+  { $match: { price: { $gte: 100 } } },
+  {
+    $group: {
+      _id: '$department',
+      productSales: { $sum: '$sales' }
+    }
+  },
+  {
+    $sort: { department: 1 }
+  }
+]);
+
+// 3. Find the number of out of stock products in each department and sort the results by the department name
+db.products.aggregate([
+  { $match: { stock: 0 } },
+  { $sort: { department: 1 } },
+  { $group: { _id: '$department', productsNoStock: { $sum: 1 } } }
+]);
