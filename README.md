@@ -28,5 +28,4 @@ Import the data from the `__restaurants__.js` file.
 $ mongoimport --db test --collection restaurants --file __restaurants__.js
 ```
 
-
-
+Chuck Michael's (https://github.com/chuckinabox/) solution
