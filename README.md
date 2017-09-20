@@ -1,5 +1,7 @@
 # assignment_practice_with_mongodb
 
+Andrew and Ed
+
 
 Querying with the MongoDB shell
 
