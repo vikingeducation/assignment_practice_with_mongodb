@@ -46,5 +46,20 @@
 #3. Find the potential revenue of each product (how much can each product make if the entire remaining stock is sold?)
 
 
+    db.products.mapReduce(
+      function(){  emit(this.name, this.stock * this.price ); },
+      function(k,v){ return Array.sum(v); },
+      {
+        out: {inline: 1}
+      }
+    );
 
 #4. Find the sum of the total and potential revenue for each product
+
+    db.products.mapReduce(
+      function(){  emit(this.name, (this.stock * this.price) + this.sales ); },
+      function(k,v){ return Array.sum(v); },
+      {
+        out: {inline: 1}
+      }
+    );
