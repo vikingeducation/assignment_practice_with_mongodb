@@ -1,4 +1,3 @@
-
 // -----------------------------
 // Inserting Products
 // -----------------------------
@@ -295,5 +294,10 @@ db.products.distinct( "department" );
 db.products.distinct( "color" );
 
 // 7. Find the total number of out of stock products for each department.
-// ?? Need to use aggregate() or mapReduce() for this
+db.products.group({
+  key: { department: 1 },
+  cond: { stock: { $lt: 1 } },
+  reduce: function(cur, result) { result.count += 1; },
+  initial: { count: 0 }
+});
 
