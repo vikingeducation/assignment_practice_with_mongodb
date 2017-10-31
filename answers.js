@@ -98,6 +98,7 @@ db.products.find({name: { $regex: /^f.*s\b/, $options: 'i' }}, {_id: 0, name: 1}
 // 9 Using $where, find all the product names that begin with T
 db.products.find({$where: "this.name[1] = 'T'"});
 
+db.myCollection.find( { $where: function() { return obj.credits == obj.debits; } } );
 // 10 Using $where, find all the product names that begin with capital
 // F or end with lowercase S
 
@@ -170,15 +171,24 @@ db.products.mapReduce(
   }
 ).find();
 
+// ^ redo that
+
 // 3 Find the potential revenue of each product (how much can each
 //   product make if the entire remaining stock is sold?)
-// 4 Find the sum of the total and potential revenue for each product
-// 5 With Single Purpose Aggregation Operations
 
+
+// 4 Find the sum of the total and potential revenue for each product
+
+
+// 
+// With Single Purpose Aggregation Operations
+// 
 
 // For each of these challenges use the Single Purpose Aggregation Operations to create a query that returns the described results.
 
 // 1 How many products are there?
+
+
 // 2 How many products are out of stock?
 // 3 How many products are fully stocked? (100)
 // 4 How many products are almost out of stock? (>= 5)
