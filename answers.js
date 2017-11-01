@@ -96,19 +96,20 @@ db.products.find({$or: [{department: {$ne: "Sports"}}, {department: {$ne: "Games
 db.products.find({name: { $regex: /^f.*s\b/, $options: 'i' }}, {_id: 0, name: 1});
 
 // 9 Using $where, find all the product names that begin with T
-db.products.find({$where: "this.name[1] = 'T'"});
+db.products.find( { $where: function() { return this.name[0] == "T"; } } );
 
-db.myCollection.find( { $where: function() { return obj.credits == obj.debits; } } );
 // 10 Using $where, find all the product names that begin with capital
 // F or end with lowercase S
+db.products.find( { $where: function() { return this.name[0] == "T" || this.name[-1] == "s"; } } );
 
 // 11 Using $where, find all the product names that begin
 // with capital T and have a price less than $100
-
+db.products.find( { $where: function() { return this.name[0] == "T" || this.price < 100; } } );
 
 // 12 Using $where, find all the product names and prices of products
 // that either start with A and have a price of at least $100 or start
 // with B and have a price of at most $100
+db.products.find( { $where: function() { return (this.name[0] == "A" && this.price >= 100 || this.name[0] == "B" && this.price <= 100); } } );
 
 //
 // Aggregating Products
@@ -180,9 +181,9 @@ db.products.mapReduce(
 // 4 Find the sum of the total and potential revenue for each product
 
 
-// 
+//
 // With Single Purpose Aggregation Operations
-// 
+//
 
 // For each of these challenges use the Single Purpose Aggregation Operations to create a query that returns the described results.
 
