@@ -164,7 +164,7 @@ db.products.mapReduce(
 // 2 Find the total revenue of each department (how much did each
 //   department make in sales?)
 db.products.mapReduce(
-  function() { emit(this.department, this.sales, this.price);},
+  function() { emit(this.department, this.sales * this.price);},
   function(key, values) {return Array.sum(values)},
   {
     query: {},
@@ -176,9 +176,18 @@ db.products.mapReduce(
 
 // 3 Find the potential revenue of each product (how much can each
 //   product make if the entire remaining stock is sold?)
+db.products.mapReduce(
+  function() { emit(this.product, this.stock * this.price );},
+  function(key, values) {return Array.sum(values)},
+  {
+    query: {},
+    out: "sales_totals_by_department"
+  }
+).find();
 
 
 // 4 Find the sum of the total and potential revenue for each product
+
 
 
 //
@@ -188,11 +197,28 @@ db.products.mapReduce(
 // For each of these challenges use the Single Purpose Aggregation Operations to create a query that returns the described results.
 
 // 1 How many products are there?
-
+db.products.count();
 
 // 2 How many products are out of stock?
+db.products.find({stock:0}).count()
+
 // 3 How many products are fully stocked? (100)
+db.products.find({stock:100}).count()
+
 // 4 How many products are almost out of stock? (>= 5)
+db.products.find({stock: {$gte: 5}}).count()
+
 // 5 What are all the unique names of all the departments?
+db.products.distinct("department")
+
 // 6 What are all the unique names of product colors?
+db.products.distinct("color")
+
 // 7 Find the total number of out of stock products for each department.
+db.products.group( {
+   key: { department: 1, product: 1},
+   cond: { stock: 0 },
+   $reduce: function(cur, result) { result.count += cur.count },
+   initial: { count: 0 }
+} )
+// ?
