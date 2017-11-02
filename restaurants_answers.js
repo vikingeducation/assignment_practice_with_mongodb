@@ -74,7 +74,7 @@ db.restaurants.aggregate([
   {$unwind: "$grades"},
   {$project: {_id: 0, name: 1, "grades.grade": 1}},
   {$match: {"grades.grade": {$ne: "Not Yet Graded"}}},
-  {$group: {_id: {name: "$name", grade: "$grade"}, sum: {$sum: }}}
+  // {$group: {_id: {name: "$name"}, sum: {$sum: 1 }}}
 ]);
 **********
 {$group: {_id: null, name: {"$name"}, grade: {"$grades.grade"}, count: {$sum: 1}}}
