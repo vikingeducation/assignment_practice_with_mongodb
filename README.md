@@ -3,6 +3,8 @@
 
 Querying with the MongoDB shell
 
+Anne Richardson
+
 
 ## Getting Started
 
