@@ -80,13 +80,17 @@ db.products.update(
   { multi: true }
 );
 
-db.products.find(
-  {department: "Hardware Tools"}
-).pretty();
-
 // 3. Update the sales of all the products in the "Hardware Tools" department to be at least 50
 
 // 4. Change the department of all the products in the "Hardware Tools" department to be "Hardware" again
+db.products.update(
+  { department: "Hardware Tools" },
+  { $set: { department: "Hardware" } },
+  { multi: true }
+);
+db.products.find(
+  {department: "Hardware Tools"}
+).pretty();
 
 // 5. Change the price of all the products in the "Hardware" department to be $10 less than their current price
 
