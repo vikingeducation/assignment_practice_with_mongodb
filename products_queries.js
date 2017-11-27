@@ -21,6 +21,14 @@ stock: Number
 // sales: 80
 // stock: 50
 
+db.products.insert({
+  name: "Small Steel Bacon",
+  price: 879,
+  department: "Home",
+  color: "indigo",
+  sales: 1,
+  stock: 91
+});
 
 // 2. Insert the following products in a single query
 // name: "Screwdriver"
