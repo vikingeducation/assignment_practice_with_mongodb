@@ -110,12 +110,14 @@ db.products.update(
 );
 db.products.find( {department: "Hardware"} ).pretty();
 
+
 // 6. Change the sales of all the products in the "Hardware" department to be at most 10
 db.products.updateMany(
   { department: "Hardware", sales: { $gt: 10 } },
   { $set: { sales: 10 } }
 );
 db.products.find( {department: "Hardware"} ).pretty();
+
 
 // 7. Update the first product in the "Hardware" department to have one more sale
 db.products.update(
