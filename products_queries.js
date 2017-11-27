@@ -225,26 +225,54 @@ db.products.find(
 
 
 // 9. Using $where, find all the product names that begin with T
+db.products.find(
+  { $where: function(){ return (this.name >= 'T' && this.name < 'U') } },
+  { _id:0, name:1 }
+);
 
 
 // 10. Using $where, find all the product names that begin with capital F or end with lowercase S
 db.products.find(
-  {  },
-  { _id:0, }
+  { $or: [
+    { $where: "this.name.match(/^F/)" },
+    { $where: "this.name.match(/s$/)" }
+  ]},
+  { _id:0, name:1 }
 );
 
 
 // 11. Using $where, find all the product names that begin with capital T and have a price less than $100
 db.products.find(
-  {  },
-  { _id:0, }
+  { $and: [
+    { $where: "this.name.match(/^T/)" },
+    { $where: "this.price < 100" },
+  ]},
+  { _id:0, name:1, price:1 }
+);
+
+// without where:
+db.products.find(
+  { $and: [
+    { name: { $regex: /^T/ } },
+    { price: { $lt: 100} }
+  ]},
+  { _id:0, name:1, price:1 }
 );
 
 
-// 12. Using $where, find all the product names and prices of products that either start with A and have a price of at least $100 or start with B and have a price of at most $100
+// 12. Using $where, find all the product names and prices of products that either start with A and have a price of at least $100 or start with T and have a price of at most $100
 db.products.find(
-  {  },
-  { _id:0, }
+  { $or: [
+    { $and: [
+      { $where: "this.name.match(/^A/)" },
+      { $where: "this.price >= 100" }
+    ]},
+    { $and: [
+      { $where: "this.name.match(/^T/)" },
+      { $where: "this.price <= 100" }
+    ]}
+  ]},
+  { _id:0, name:1, price:1 }
 );
 
 
