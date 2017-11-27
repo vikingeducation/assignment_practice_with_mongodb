@@ -182,29 +182,38 @@ db.products.find(
 
 // 4. Find the names of all the red products
 db.products.find(
-  {  },
-  { _id:0, }
+  { color: 'red' },
+  { _id:0, name:1 }
 );
 
 
 // 5. Find only the IDs of all the red and blue products
 db.products.find(
-  {  },
-  { _id:0, }
+  { $or: [
+    { color: 'red' },
+    { color: 'blue' }
+  ]},
+  { _id:1 }
 );
 
 
 // 6. Find the names of all the products that are not red or blue
 db.products.find(
-  {  },
-  { _id:0, }
+  { $nor: [
+    { color: 'red' },
+    { color: 'blue' }
+  ]},
+  { _id:0, name:1 }
 );
 
 
 // 7. Find the names of all the products that are not in the Sports or Games departments
 db.products.find(
-  {  },
-  { _id:0, }
+  { $nor: [
+    { department: 'Sports' },
+    { department: 'Games' }
+  ]},
+  { _id:0, name:1, department:1 }
 );
 
 
