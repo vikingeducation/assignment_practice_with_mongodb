@@ -86,6 +86,12 @@ db.products.find( {department: "Hardware Tools"} ).pretty();
 
 
 // 3. Update the sales of all the products in the "Hardware Tools" department to be at least 50
+db.products.updateMany(
+  { department: "Hardware Tools", sales: { $lt: 50 } },
+  { $set: { sales: 50 } }
+);
+db.products.find( {department: "Hardware Tools"} ).pretty();
+
 
 // 4. Change the department of all the products in the "Hardware Tools" department to be "Hardware" again
 db.products.update(
