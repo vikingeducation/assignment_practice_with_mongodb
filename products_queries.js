@@ -107,7 +107,11 @@ db.products.find( {department: "Hardware"} ).pretty();
 // 6. Change the sales of all the products in the "Hardware" department to be at most 10
 
 // 7. Update the first product in the "Hardware" department to have one more sale
-
+db.products.update(
+  { department: "Hardware" },
+  { $inc: { sales: 1 } }
+);
+db.products.find( {department: "Hardware"} ).pretty();
 
 /*  --------- Removing Products --------- */
 // 1. Remove the first product in the "Hardware" department
