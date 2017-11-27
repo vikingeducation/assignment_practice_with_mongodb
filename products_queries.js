@@ -172,8 +172,11 @@ db.products.find(
 
 // 3. Find the name, color and department of all the products with a price between $100 and $1000
 db.products.find(
-  {  },
-  { _id:0, }
+  { $and: [
+    { price: { $gte: 100 } },
+    { price: { $lte: 1000 } },
+  ]},
+  { _id:0, name:1, color:1, department:1 }
 );
 
 
