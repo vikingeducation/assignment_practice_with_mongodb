@@ -153,10 +153,15 @@ db.products.find( {department: "Hardware"} ).pretty();
 // -----------------------------------------
 // Finding Products
 // -----------------------------------------
-
 // Note that you should use projection for these queries to filter the returned fields to only those fields described in each problem.
 
 // 1. Find the names of all the products that are out of stock
+db.products.find({
+  stock: { $lte: 0 },
+},
+  { _id:0, name:1 }
+);
+
 
 // 2. Find the stock count of all the products with a price below $100
 
