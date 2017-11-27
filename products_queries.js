@@ -284,10 +284,37 @@ db.products.find(
 // For each of these challenges use the Aggregation Pipeline to create a query that returns the described results.
 
 // 1. Find the total number of sales each department made and sort the results by the department name
+db.products.aggregate([
+  { $group: { _id: '$department', total_sales: { $sum: '$sales' } } },
+  { $sort: { _id:1 } }
+]);
+
 
 // 2. Find the total number of sales each department made of a product with a price of at least $100 and sort the results by the department name
+db.products.aggregate([
+  { $match: { price: { $gte: 100 } } },
+  { $group: { _id: '$department', total_sales: { $sum: '$sales'}} },
+  { $sort: { _id:1 } }
+]);
 
 // 3. Find the number of out of stock products in each department and sort the results by the department name
+db.products.aggregate([
+  { $match: { stock: 0 } },
+  { $group: { _id: '$department', total_products: {$sum: 1} }},
+  { $sort: { _id:1 } }
+]);
+
+// using group() -- though does not sort
+db.products.group({
+  // set up the department name as the key by which we'll group
+  key: { department: 1 },
+  // filter the results to only those that have a stock of 0
+  cond: { stock: 0 },
+  // for each grouped department, count the records
+  reduce: function(current, result) { result.count += 1; },
+  // set the initial count at 0
+  initial: { count: 0 },
+});
 
 
 // With Map-Reduce
