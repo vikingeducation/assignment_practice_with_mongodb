@@ -10,8 +10,6 @@ stock: Number
 */
 
 
-
-
 /*  --------- Inserting Products --------- */
 // 1. Insert a product with the following properties
 // name: "Hammer"
@@ -64,15 +62,21 @@ db.products.insert([
   }
 ]);
 
-db.products.find({
-  name: "Wrench"
-});
-
 
 /*  --------- Updating Products --------- */
 // Note for some of these you may have to refer to update operators like $min and $max.
 
 // 1. Change the department of all products in the "Hardware" department to "Hardware Tools"
+db.products.update(
+  { department: "Hardware" },
+  { $set: { department: "Hardware Tools" } },
+  { multi: true }
+);
+
+db.products.find(
+  {department: "Hardware Tools"}
+).pretty();
+
 
 // 2. Change the price of all products in the "Hardware Tools" department to cost $10 more than their current price
 
