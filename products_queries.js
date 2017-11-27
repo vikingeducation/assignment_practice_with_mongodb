@@ -320,7 +320,21 @@ db.products.group({
 // With Map-Reduce
 // For each of these challenges use the Map-Reduce to create a query that returns the described results.
 
-// 1. Find the number of products with each color
+// 1. Find the number of products for each color
+db.products.mapReduce(
+  // the map function:
+  function() { emit(this.color, 1); }, // this points to this record
+  // the reduce function:
+  function(keys, values) { return Array.sum(values); },
+  // the optional options object:
+  {
+    query: {}, // empty because we want to get all the records
+    out: "product_totals_by_color" // the name we've given the result object
+  }
+).find();
+
+db.products.count({color: 'azure'});
+
 
 // 2. Find the total revenue of each department (how much did each department make in sales?)
 
