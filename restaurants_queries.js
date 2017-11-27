@@ -88,16 +88,38 @@ db.restaurants.find(
 );
 
 
-/*  --------- Aggregating Restaurants --------- */
-List the number of restaurants under each zipcode
-List unique names of all restaurants with at least 1 grade of A or B sorted in reverse alphabetical order
-Aggregating Restaurants with $unwind (Optional)
+// ------------------------------------
+// Aggregating Restaurants
+// ------------------------------------
 
-How to Use $unwind
+// 1. List the number of restaurants under each zipcode
+db.restaurants.aggregate([
+  { $group: {
+    _id: '$address.zipcode', qty: { $sum: 1 }
+  }}
+]);
 
-The following queries will help you get oriented with the $unwind operator. Its purpose is to flatten out nested arrays so that they can be aggregated. Here is a StackOverflow post explaining $unwind with an example.
 
-Your first task is to try out $unwind to get used to what it does. Execute the following queries in your MongoDB shell:
+// 2. List unique names of all restaurants with at least 1 grade of A or B sorted in reverse alphabetical order
+db.restaurants.aggregate([
+  { $match: {
+    $or: [
+      {'grades.grade': 'A'},
+      {'grades.grade': 'B'}
+    ]
+  }},
+  { $group: { _id: '$name' } },
+  { $sort: {_id: -1}}
+]);
+
+
+/* Aggregating Restaurants with $unwind (Optional) */
+
+// How to Use $unwind
+// The following queries will help you get oriented with the $unwind operator. Its purpose is to flatten out nested arrays so that they can be aggregated. Here is a StackOverflow post explaining $unwind with an example.
+
+
+// Your first task is to try out $unwind to get used to what it does. Execute the following queries in your MongoDB shell:
 
 // ----------------------------------------
 // Remove All Containers
