@@ -61,6 +61,7 @@ db.products.insert([
     stock: 50
   }
 ]);
+db.products.find( {department: "Hardware"} ).pretty();
 
 
 /*  --------- Updating Products --------- */
@@ -72,6 +73,8 @@ db.products.update(
   { $set: { department: "Hardware Tools" } },
   { multi: true }
 );
+db.products.find( {department: "Hardware Tools"} ).pretty();
+
 
 // 2. Change the price of all products in the "Hardware Tools" department to cost $10 more than their current price
 db.products.update(
@@ -79,6 +82,8 @@ db.products.update(
   { $inc: { price: 10 } },
   { multi: true }
 );
+db.products.find( {department: "Hardware Tools"} ).pretty();
+
 
 // 3. Update the sales of all the products in the "Hardware Tools" department to be at least 50
 
@@ -88,9 +93,8 @@ db.products.update(
   { $set: { department: "Hardware" } },
   { multi: true }
 );
-db.products.find(
-  {department: "Hardware Tools"}
-).pretty();
+db.products.find( {department: "Hardware"} ).pretty();
+
 
 // 5. Change the price of all the products in the "Hardware" department to be $10 less than their current price
 
