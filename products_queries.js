@@ -144,6 +144,10 @@ db.products.find( {department: "Hardware"} ).pretty();
 
 
 // 2. Remove all products in the "Hardware" department
+db.products.remove(
+  { department: "Hardware" }
+);
+db.products.find( {department: "Hardware"} ).pretty();
 
 
 // -----------------------------------------
