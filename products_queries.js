@@ -163,27 +163,86 @@ db.products.find({
 );
 
 
+
+
+
+
+
 // 2. Find the stock count of all the products with a price below $100
+db.products.find(
+  {  },
+  { _id:0, }
+);
+
 
 // 3. Find the name, color and department of all the products with a price between $100 and $1000
+db.products.find(
+  {  },
+  { _id:0, }
+);
+
 
 // 4. Find the names of all the red products
+db.products.find(
+  {  },
+  { _id:0, }
+);
+
 
 // 5. Find only the IDs of all the red and blue products
+db.products.find(
+  {  },
+  { _id:0, }
+);
+
 
 // 6. Find the names of all the products that are not red or blue
+db.products.find(
+  {  },
+  { _id:0, }
+);
+
 
 // 7. Find the names of all the products that are not in the Sports or Games departments
+db.products.find(
+  {  },
+  { _id:0, }
+);
+
 
 // 8. Find the name and price of all the products with names that begin with the letter F and end with the letter S and ignore case
+db.products.find(
+  {  },
+  { _id:0, }
+);
+
 
 // 9. Using $where, find all the product names that begin with T
+db.products.find(
+  {  },
+  { _id:0, }
+);
+
 
 // 10. Using $where, find all the product names that begin with capital F or end with lowercase S
+db.products.find(
+  {  },
+  { _id:0, }
+);
+
 
 // 11. Using $where, find all the product names that begin with capital T and have a price less than $100
+db.products.find(
+  {  },
+  { _id:0, }
+);
+
 
 // 12. Using $where, find all the product names and prices of products that either start with A and have a price of at least $100 or start with B and have a price of at most $100
+db.products.find(
+  {  },
+  { _id:0, }
+);
 
 
 // -----------------------------------------
