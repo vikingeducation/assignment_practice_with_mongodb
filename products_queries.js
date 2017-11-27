@@ -163,15 +163,10 @@ db.products.find({
 );
 
 
-
-
-
-
-
 // 2. Find the stock count of all the products with a price below $100
 db.products.find(
-  {  },
-  { _id:0, }
+  { price: { $lt: 100 } },
+  { _id:0, stock:1 }
 );
 
 
