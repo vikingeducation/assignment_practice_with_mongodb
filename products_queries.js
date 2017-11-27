@@ -219,16 +219,12 @@ db.products.find(
 
 // 8. Find the name and price of all the products with names that begin with the letter F and end with the letter S and ignore case
 db.products.find(
-  {  },
-  { _id:0, }
+  { name: { $regex: /^F.*S$/i } },
+  { _id:0, name:1 }
 );
 
 
 // 9. Using $where, find all the product names that begin with T
-db.products.find(
-  {  },
-  { _id:0, }
-);
 
 
 // 10. Using $where, find all the product names that begin with capital F or end with lowercase S
