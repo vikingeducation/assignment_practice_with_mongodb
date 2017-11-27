@@ -337,8 +337,26 @@ db.products.count({color: 'azure'});
 
 
 // 2. Find the total revenue of each department (how much did each department make in sales?)
+db.products.mapReduce(
+  function() { emit(this.department, this.price * this.sales); },
+  function(keys, values) { return Array.sum(values); },
+  {
+    query: {},
+    out: "revenue_by_department"
+  }
+).find();
+
 
 // 3. Find the potential revenue of each product (how much can each product make if the entire remaining stock is sold?)
+db.products.mapReduce(
+  function() { emit(this.department, this.price * this.stock); },
+  function(keys, values) { return Array.sum(values); },
+  {
+    query: {},
+    out: "potential_revenue_by_department"
+  }
+).find();
+
 
 // 4. Find the sum of the total and potential revenue for each product
 
