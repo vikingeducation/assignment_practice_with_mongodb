@@ -136,6 +136,12 @@ db.products.find( {department: "Hardware"} ).pretty();
 // -----------------------------------------
 
 // 1. Remove the first product in the "Hardware" department
+db.products.remove(
+  { department: "Hardware" },
+  { justOne: true }
+);
+db.products.find( {department: "Hardware"} ).pretty();
+
 
 // 2. Remove all products in the "Hardware" department
 
