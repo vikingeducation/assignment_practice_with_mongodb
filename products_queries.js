@@ -97,6 +97,12 @@ db.products.find( {department: "Hardware"} ).pretty();
 
 
 // 5. Change the price of all the products in the "Hardware" department to be $10 less than their current price
+db.products.update(
+  { department: "Hardware" },
+  { $inc: { price: -10 } },
+  { multi: true }
+);
+db.products.find( {department: "Hardware"} ).pretty();
 
 // 6. Change the sales of all the products in the "Hardware" department to be at most 10
 
