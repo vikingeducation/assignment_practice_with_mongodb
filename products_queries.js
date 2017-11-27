@@ -73,12 +73,16 @@ db.products.update(
   { multi: true }
 );
 
+// 2. Change the price of all products in the "Hardware Tools" department to cost $10 more than their current price
+db.products.update(
+  { department: "Hardware Tools" },
+  { $inc: { price: 10 } },
+  { multi: true }
+);
+
 db.products.find(
   {department: "Hardware Tools"}
 ).pretty();
-
-
-// 2. Change the price of all products in the "Hardware Tools" department to cost $10 more than their current price
 
 // 3. Update the sales of all the products in the "Hardware Tools" department to be at least 50
 
