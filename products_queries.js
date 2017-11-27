@@ -359,6 +359,14 @@ db.products.mapReduce(
 
 
 // 4. Find the sum of the total and potential revenue for each product
+db.products.mapReduce(
+  function() { emit(this.name, (this.price * this.sales) + (this.price * this.stock)); },
+  function(keys, values) { return Array.sum(values); },
+  {
+    query: {},
+    out: "total_revenues_by_department"
+  }
+).find();
 
 
 // With Single Purpose Aggregation Operations
