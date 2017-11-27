@@ -45,6 +45,29 @@ db.products.insert({
 // sales: 70
 // stock: 50
 
+db.products.insert([
+  {
+    name: "Screwdriver",
+    price: 19.99,
+    department: "Hardware",
+    color: "green",
+    sales: 75,
+    stock: 50
+  },
+  {
+    name: "Wrench",
+    price: 21.99,
+    department: "Hardware",
+    color: "orange",
+    sales: 70,
+    stock: 50
+  }
+]);
+
+db.products.find({
+  name: "Wrench"
+});
+
 
 /*  --------- Updating Products --------- */
 // Note for some of these you may have to refer to update operators like $min and $max.
