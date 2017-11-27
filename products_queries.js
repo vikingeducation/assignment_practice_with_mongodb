@@ -9,8 +9,10 @@ sales: Number
 stock: Number
 */
 
+// -----------------------------------------
+// Inserting Products
+// -----------------------------------------
 
-/*  --------- Inserting Products --------- */
 // 1. Insert a product with the following properties
 // name: "Hammer"
 // price: 9.99
@@ -64,7 +66,9 @@ db.products.insert([
 db.products.find( {department: "Hardware"} ).pretty();
 
 
-/*  --------- Updating Products --------- */
+// -----------------------------------------
+// Updating Products
+// -----------------------------------------
 // Note for some of these you may have to refer to update operators like $min and $max.
 
 // 1. Change the department of all products in the "Hardware" department to "Hardware Tools"
@@ -126,13 +130,20 @@ db.products.update(
 );
 db.products.find( {department: "Hardware"} ).pretty();
 
-/*  --------- Removing Products --------- */
+
+// -----------------------------------------
+// Removing Products
+// -----------------------------------------
+
 // 1. Remove the first product in the "Hardware" department
 
 // 2. Remove all products in the "Hardware" department
 
 
-/*  --------- Finding Products --------- */
+// -----------------------------------------
+// Finding Products
+// -----------------------------------------
+
 // Note that you should use projection for these queries to filter the returned fields to only those fields described in each problem.
 
 // 1. Find the names of all the products that are out of stock
@@ -160,7 +171,9 @@ db.products.find( {department: "Hardware"} ).pretty();
 // 12. Using $where, find all the product names and prices of products that either start with A and have a price of at least $100 or start with B and have a price of at most $100
 
 
-/*  --------- Aggregating Products --------- */
+// -----------------------------------------
+// Aggregating Products
+// -----------------------------------------
 
 // With the Aggregation Pipeline
 // For each of these challenges use the Aggregation Pipeline to create a query that returns the described results.
