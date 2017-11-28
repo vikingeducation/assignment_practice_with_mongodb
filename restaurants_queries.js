@@ -116,20 +116,12 @@ db.restaurants.aggregate([
 /* Aggregating Restaurants with $unwind (Optional) */
 
 // How to Use $unwind
-// The following queries will help you get oriented with the $unwind operator. Its purpose is to flatten out nested arrays so that they can be aggregated. Here is a StackOverflow post explaining $unwind with an example.
+// The following queries will help you get oriented with the $unwind operator. Its purpose is to flatten out nested arrays so that they can be aggregated.
 
-
-// Your first task is to try out $unwind to get used to what it does. Execute the following queries in your MongoDB shell:
-
-// ----------------------------------------
-// Remove All Containers
-// ----------------------------------------
+// A. Remove All Containers
 db.containers.remove({});
 
-
-// ----------------------------------------
-// Insert Containers
-// ----------------------------------------
+// B. Insert Containers
 db.containers.insert({
   name: "One",
   items: [1, 2, 3]
@@ -140,39 +132,91 @@ db.containers.insert({
   items: [4, 5, 6]
 });
 
-
-// ----------------------------------------
-// Unwind Items
-// ----------------------------------------
+// C. Unwind Items
 db.containers.aggregate([
   { $unwind: "$items" },
   { $project: { _id: 0, name: 1, items: 1 } }
 ]);
-The result should look like this:
 
-// { "name" : "One", "items" : 1 }
-// { "name" : "One", "items" : 2 }
-// { "name" : "One", "items" : 3 }
-// { "name" : "Two", "items" : 4 }
-// { "name" : "Two", "items" : 5 }
-// { "name" : "Two", "items" : 6 }
-As you can see, we've "unwound" the items of each document so that we have a single document for each entry in the items array of that document. This allows us to aggregate them:
-
+// D. Aggregate the items
 db.containers.aggregate([
   { $unwind: "$items" },
   { $project: { _id: 0, name: 1, items: 1 } },
   { $group: { _id: "$name", sum: { $sum: "$items" } } }
 ]);
-$unwinding Restaurant Grades
 
-Use $unwind to deconstruct subarrays in the restaurants database to perform the following queries:
 
-Sum the scores for each restaurant
-Sum the scores for each restaurant show only restaurants with scores above 50
-Show a count of each grade for each restaurant excluding grades of "Not Yet Graded"
-Show a count of each grade for each restaurant excluding entries with only 1 grade
-Finishing Up
+// ------------------------------------
+// $unwinding Restaurant Grades
+// ------------------------------------
+// Use $unwind to deconstruct subarrays in the restaurants database to perform the following queries:
 
-When you're finished with all tasks, push your changes up to your fork (aka $ git push origin master).
-To submit your assignment, create a pull request from your fork to the main upstream repository.
+// 1. Sum the scores for each restaurant
+// solution 1
+db.restaurants.aggregate([
+  { $unwind: "$grades" },
+  { $group: {
+    _id: {
+      name: "$name",
+      sum: { $sum: "$grades.score" }
+    }
+  }},
+  { $project: { '_id.name': 1, '_id.sum': 1 } },
+  { $sort: {_id: 1}}
+]);
 
+// solution 2
+db.restaurants.aggregate([
+  { $unwind: "$grades" },
+  { $group: {
+    _id: "$name",
+    sum: { $sum: "$grades.score" }
+  }},
+  { $project: { _id: 1, sum: 1 } },
+  { $sort: {_id: 1}}
+]);
+
+
+// 2. Sum the scores for each restaurant show only restaurants with scores above 50
+db.restaurants.aggregate([
+  { $match: { 'grades.score': {$gt: 50}} },
+  { $unwind: "$grades" },
+  { $group: {
+    _id: "$name",
+    sum: { $sum: "$grades.score" }
+  }},
+  { $project: { _id: 1, sum: 1 } },
+  { $sort: {_id: 1}}
+]);
+
+
+// 3. Show a count of each grade for each restaurant excluding grades of "Not Yet Graded"
+db.restaurants.aggregate([
+  { $match: { 'grades.score': {$ne: "Not Yet Graded"}} },
+  { $unwind: "$grades" },
+  { $group: {
+    _id: {
+      name: "$name",
+      grade: "$grades.grade",
+    },
+    sum: { $sum: 1 }
+  }},
+  { $project: { name: 1, grade: 1, sum: 1 } },
+  { $sort: {_id: 1}}
+]);
+
+
+// 4. Show a count of each grade for each restaurant excluding entries with only 1 grade
+db.restaurants.aggregate([
+  { $unwind: "$grades" },
+  { $group: {
+    _id: {
+      name: "$name",
+      grade: "$grades.grade",
+    },
+    sum: { $sum: 1 }
+  }},
+  { $match: { sum: {$ne: 1 } } },
+  { $project: { name: 1, grade: 1, sum: 1 } },
+  { $sort: {_id: 1}}
+]);
