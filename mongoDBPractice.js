@@ -176,3 +176,23 @@ db.products.aggregate([
   },
   { $sort: { _id: 1 } }
 ]);
+
+//Find the number of out of stock products in each
+//department and sort the results by the department name
+
+
+db.products.aggregate([
+  { $match: { stock: 0 } },
+  {
+    $group: { _id: "$department", OutOfStockProducts: { $sum: 1 } }
+  },
+  { $sort: { _id: 1 } }
+]);
+
+
+//With Map Reduce
+//=================
+
+//1. Find the number of products with each color
+
+db.products.mapReduce(, , {})
