@@ -150,10 +150,10 @@ db.world.aggregate([
 db.world.aggregate([
   {
     $group: {
-      _id: {
+      continent: {
         $cond: [
-          { $eq: ["$continent", "North America"] },
-          "America",
+          { $eq: ["$continent", "Oceania"] },
+          "Australasia",
           {
             $cond: [
               { $eq: ["$continent", "South America"] },
@@ -178,3 +178,18 @@ db.world.aggregate([
     }
   }
 ]);
+
+
+db.world.aggregate([
+  {
+  $match:{
+  name:{$regex:"^N"}
+  }},
+  {$project:{
+  _id:0,
+  name:1,
+  continent: $cond{ $eq: ["$continent", "Oceania"] },
+  "Australasia",continent:1}
+
+  }}
+])
