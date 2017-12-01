@@ -61,3 +61,40 @@ db.products.find({stock: 0},
 	{name: 1});
 db.products.find({price: {$lt: 100 }},
 	{stock:1});
+db.products.find({$or: [
+  { price: { $gte: 100} },
+  { price: { $lte: 1000 } }
+  ]},
+	{name:1, color: 1, department: 1});
+
+db.products.find({color: "red"},
+	{name:1});
+
+db.products.find({$or: [
+  { color: "red" },
+  { color: "red"}
+  ]},
+	{name:1});
+
+db.products.find({$or: [
+  { color: {$ne: "red" }},
+  { color: {$ne: "blue"}},
+  ]},
+	{name:1});
+db.products.find({$or: [
+  { department: {$ne: "Sports" }},
+  { department: {$ne: "Games"}},
+  ]},
+	{name:1});
+db.products.find({$and: [
+  { name:  { $regex: /^F/, $options: 'i'}},
+  { name:  { $regex: /S$/, $options: 'i' }},
+  ]},
+	{name:1});
+
+db.products.find({
+   $where: {name: {$regex: /^S/}},
+	{name:1});
+
+
+
