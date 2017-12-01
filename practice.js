@@ -51,3 +51,13 @@ db.products.update({department:"Hardware Tools"},{ $inc: { sales: 50 } }, {multi
 // Change the price of all the products in the "Hardware" department to be $10 less than their current price
 // Change the sales of all the products in the "Hardware" department to be at most 10
 // Update the first product in the "Hardware" department to have one more sale
+db.products.update({department:"Hardware Tools"},{"$set":{department:"Hardware"}}, {multi:true} )
+db.products.update({department:"Hardware"},{ $inc: { price: -10 } }, {multi:true} )
+db.products.update({department:"Hardware"},{ $inc: { sales: 10 } }, {multi:true} )
+db.products.update({department:"Hardware"},{ $inc: { sale: 1 } }, {multi:false} )
+db.products.remove({department:"Hardware"},{justOne: true})
+db.products.remove({department:"Hardware"},{justOne: false})
+db.products.find({stock: 0}, 
+	{name: 1});
+db.products.find({price: {$lt: 100 }},
+	{stock:1});
