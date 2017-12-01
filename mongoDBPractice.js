@@ -130,7 +130,4 @@ db.products.find({ $where: "this.department!= 'Sports' && this.department!= 'Gam
 //Find the name and price of all the products with names that
 // begin with the letter F and end with the letter S and ignore case
 
-db.products.find({ name: { $regex: /^F*+S$/i } },
-
-
-)
+db.products.find({ name: { $regex: /^F.*S$/i } }, { name: 1, price: 1 });
