@@ -57,7 +57,7 @@ db.products.update({department:"Hardware"},{ $inc: { sales: 10 } }, {multi:true}
 db.products.update({department:"Hardware"},{ $inc: { sale: 1 } }, {multi:false} )
 db.products.remove({department:"Hardware"},{justOne: true})
 db.products.remove({department:"Hardware"},{justOne: false})
-db.products.find({stock: 0}, 
+db.products.find({stock: 0},
 	{name: 1});
 db.products.find({price: {$lt: 100 }},
 	{stock:1});
@@ -92,9 +92,17 @@ db.products.find({$and: [
   ]},
 	{name:1});
 
+
+
 db.products.find({
-   $where: {name: {$regex: /^S/}},
+   $where: "{ $regex: /^T/, $options: 'i'}"},
 	{name:1});
 
+  db.products.find({
+     $where: "this.price >= 100"},
+  	{name:1});
 
 
+  db.students.find({
+    $where: "this.score >= 90"
+  });
