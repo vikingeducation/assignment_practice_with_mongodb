@@ -197,3 +197,58 @@ db.products.find({$where: "this.name[0] === 'T' && this.price < 100"});
 ```
 db.products.find({$where: "(this.name[0] === 'A' && this.price >= 100) || (this.name[0] === 'B' && this.price <= 100)"});
 ```
+
+### Aggregating Products
+
+> With the Aggregation Pipeline
+
+For each of these challenges use the Aggregation Pipeline to create a query that returns the described results.
+
+1. Find the total number of sales each department made and sort the results by the department name
+
+```
+db.products.aggregate([
+{$group: {_id: "$department", sales: {$sum: "$sales"}}},{$sort: {_id: 1}}
+]);
+```
+
+2. Find the total number of sales each department made of a product with a price of at least $100 and sort the results by the department name
+
+```
+db.products.aggregate([
+{$match: {price: {$gte: 100}}},
+{$group: {_id: "$department", sales: {$sum: "$sales"}}},
+{$sort: {_id: 1}}
+]);
+```
+
+3. Find the number of out of stock products in each department and sort the results by the department name
+
+```
+db.products.aggregate([
+{$match: {stock:0}},
+{$group: {_id: "$department", count: {$sum: 1}}},
+{$sort: {_id: 1}}
+]);
+```
+
+> With Map-Reduce
+
+For each of these challenges use the Map-Reduce to create a query that returns the described results.
+
+1. Find the number of products with each color
+2. Find the total revenue of each department (how much did each department make in sales?)
+3. Find the potential revenue of each product (how much can each product make if the entire remaining stock is sold?)
+4. Find the sum of the total and potential revenue for each product
+
+> With Single Purpose Aggregation Operations
+
+For each of these challenges use the Single Purpose Aggregation Operations to create a query that returns the described results.
+
+1. How many products are there?
+2. How many products are out of stock?
+3. How many products are fully stocked? (100)
+4. How many products are almost out of stock? (>= 5)
+5. What are all the unique names of all the departments?
+6. What are all the unique names of product colors?
+7. Find the total number of out of stock products for each department.
