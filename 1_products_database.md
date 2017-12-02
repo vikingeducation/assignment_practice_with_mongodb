@@ -246,9 +246,50 @@ For each of these challenges use the Map-Reduce to create a query that returns t
 For each of these challenges use the Single Purpose Aggregation Operations to create a query that returns the described results.
 
 1. How many products are there?
+
+```
+db.products.count();
+```
+
 2. How many products are out of stock?
+
+```
+db.products.count({stock: 0});
+```
+
 3. How many products are fully stocked? (100)
+
+```
+db.products.count({stock: {$gt: 0}});
+```
+
 4. How many products are almost out of stock? (>= 5)
+
+```
+db.products.count({$and:[{stock: {$lte: 5}},{stock: {$gt:0}}]});
+```
+
 5. What are all the unique names of all the departments?
+
+```
+db.products.distinct('department');
+db.runCommand({ distinct: "products", key: "department" });
+```
+
 6. What are all the unique names of product colors?
+
+```
+db.products.distinct('color');
+db.runCommand({ distinct: "products", key: "color" });
+```
+
 7. Find the total number of out of stock products for each department.
+```
+db.products.group({
+  key: { department: 1 },
+  cond: { stock: 0 },
+  reduce: function(cur, result) { result.count += 1; },
+  initial: { count: 0 }
+});
+```
+
