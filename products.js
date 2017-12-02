@@ -59,7 +59,6 @@ db.products.update(
 );
 
 
-
 db.products.update(
   { department: "Hardware" },
   { $rename: { department: "Hardware Tools" } },
@@ -78,7 +77,7 @@ db.products.update(
 
 db.products.update(
   { department: "Hardware Tools" },
-  { $min: { price: 50 } },
+  { $max: { price: 50 } },
   { multi: true }
 );
 
@@ -102,7 +101,7 @@ db.products.update(
 
 db.products.update(
   { department: "Hardware" },
-  { $max: { price: 10 } },
+  { $min: { price: 10 } },
   { multi: true }
 );
 
@@ -110,8 +109,7 @@ db.products.update(
 
 db.products.update(
   { department: "Hardware" },
-  { $inc: { sales: 1 } },
-  { justOne: true }
+  { $inc: { sales: 1 } }
 );
 
 //Removing Products
@@ -343,7 +341,7 @@ db.products.mapReduce(
 // Find the total revenue of each department (how much did each department make in sales?)
 db.products.mapReduce(
     function() {
-      emit(this.department, this.sales);
+      emit(this.department, this.price*this.sales);
     },
     function(keys, values) {
       return Array.sum(values);
