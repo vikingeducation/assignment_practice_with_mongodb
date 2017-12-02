@@ -1,4 +1,4 @@
-###Inserting Products
+### Inserting Products
 
 1. Insert a product with the following properties
 * name: "Hammer"
@@ -36,7 +36,7 @@ db.products.insertMany([
 ]);
 ```
 
-###Updating Products
+### Updating Products
 
 Note for some of these you may have to refer to update operators like $min and $max.
 
@@ -100,5 +100,23 @@ db.products.updateMany(
 db.products.updateOne(
 	{department:"Hardware"},
 	{$inc: {sales:1}}
+);
+```
+
+### Removing Products
+
+1. Remove the first product in the "Hardware" department
+
+```
+db.products.deleteOne(
+	{department: "Hardware"}
+);
+```
+
+2. Remove all products in the "Hardware" department
+
+```
+db.products.deleteMany(
+	{department: "Hardware"}
 );
 ```
