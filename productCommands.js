@@ -103,7 +103,7 @@ db.products.remove(
 // Find the names of all the products that are out of stock
 db.products.find(
    { stock: 0 },
-   { _id: 0, price: 0, department: 0, color: 0, sales: 0, stock: 0}
+   { _id: 0, price: 0, color: 0, department: 0, sales: 0, stock: 0}
 );
 
 // Find the stock count of all the products with a price below $100
@@ -182,46 +182,117 @@ db.products.find({
 );
 
 // Using $where, find all the product names that begin with capital T and have a price less than $100
+db.products.find({
+      $and: [
+         { $where: "this.name.charAt(0) === 'T'" },
+         { $where: "this.price < 100" }
+      ] },
+      { _id: 0, sales: 0, stock: 0, department: 0, color: 0, price: 0 }
+);
 
 // Using $where, find all the product names and prices of products that either start with A and have a price of at least $100 or start with B and have a price of at most $100
-
+db.products.find({
+      $or: [
+            { $and: [
+                  { $where: "this.name.charAt(0) === 'B'" },
+                  { $where: "this.price <= 100"}
+            ] },
+            { $and: [
+               { $where: "this.name.charAt(0) === 'A'" },
+               { $where: "this.price >= 100" }
+         ] }
+      ] },
+      { _id: 0, sales: 0, stock: 0, department: 0, color: 0 }
+   );
 
 // AGGREGATING PRODUCTS
 // With the Aggregation Pipeline
 // For each of these challenges use the Aggregation Pipeline to create a query that returns the described results.
 
 // Find the total number of sales each department made and sort the results by the department name
+db.products.aggregate([
+      { $group: { _id: "$department", sum: { $sum: "$sales" } } },
+      { $sort: { name: 1 } },
+]);
 
 // Find the total number of sales each department made of a product with a price of at least $100 and sort the results by the department name
+db.products.aggregate([
+      { $match: { price: { $gte: 100 } } },
+      { $group: { _id: "$department", sum: { $sum: "$sales" } } },
+      { $sort: { name: 1 } },
+]);
 
 // Find the number of out of stock products in each department and sort the results by the department name
-
+db.products.aggregate([
+      { $match: { stock: 0 } },
+      { $group: { _id: "$department", sum: { $sum: 1 } } },
+      { $sort: { department: 1 } },
+]);
 
 // With Map-Reduce
 // For each of these challenges use the Map-Reduce to create a query that returns the described results.
 
 // Find the number of products with each color
+db.products.mapReduce(
+      function() { emit(this.color, 1); },
+      function(keys, values) { return Array.sum(values); },
+      {
+            query: {},
+            // creates a new collection
+            out: "products_by_color"
+      }
+).find();
 
 // Find the total revenue of each department (how much did each department make in sales?)
+db.products.mapReduce(
+      function() { emit(this.department, this.price); },
+      function(keys, values) { return Array.sum(values); },
+      {
+            query: {},
+            out: "revenue_by_department"
+      }
+).find();
 
 // Find the potential revenue of each product (how much can each product make if the entire remaining stock is sold?)
+// ??
+var itemArray = [this.price, this.stock];
+db.products.mapReduce(
+      function() { emit(this.product, itemArray); },
+      function(keys, values) { return Array.sum(this.price * this.stock); },
+      {
+            query: {},
+            out: { inline: 1 }
+      }
+).find();
 
 // Find the sum of the total and potential revenue for each product
-
+// ??
 
 // With Single Purpose Aggregation Operations
 // For each of these challenges use the Single Purpose Aggregation Operations to create a query that returns the described results.
 
 // How many products are there?
+db.products.count();
 
 // How many products are out of stock?
+db.products.count({ stock: 0 });
 
 // How many products are fully stocked? (100)
+db.products.count({ stock: 100 });
 
 // How many products are almost out of stock? (>= 5)
+db.products.count({ stock: { $lte: 5 } });
 
 // What are all the unique names of all the departments?
+db.products.distinct('department');
 
 // What are all the unique names of product colors?
+db.products.distinct('color');
 
 // Find the total number of out of stock products for each department.
+db.products.group({ 
+      key: { department: 1 },
+      cond: { stock: 0 },
+      reduce: function(cur, result) { result.count += 1 },
+      initial: { count: 0 }
+});
