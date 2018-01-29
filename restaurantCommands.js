@@ -4,23 +4,64 @@
 // Note that queries from these point on may require you to use field path syntax which can be done using dot syntax like this "grades.grade" or "$grades.grade". This is done to target nested documents.
 
 // Find the first 5 restaurants returning only the name
+db.restaurants.find(
+   {},
+   { name: 1 }
+).limit(5);
 
 // Find the name of all restaurants with at least 1 grade of A or B
+// ??
+db.restaurants.find(
+   { 'A': { $in: "$grades.grade" } },
+   { name: 1 }
+);
+
+db.restaurants.find(
+   {},
+   { "$grades.grade": 1 }
+).limit(5);
+
 
 // Find the name of all restaurants with at least 1 score above 20
 
 // Find the unique types of cuisine in restaurants in the Bronx
+db.restaurants.distinct(
+   'cuisine',
+   { borough: 'Bronx' }
+);
 
 // Find all the names and addresses of all the Spanish restaurants in Queens
+db.restaurants.find({
+   $and: [
+   { borough: "Queens" },
+   { cuisine: "Spanish" }
+   ] },
+   { _id: 0, cuisine: 0, borough: 0, grades: 0 }
+);
 
 // Find all the names and addresses of all the restaurants in Manhattan that are not a Bakery, Spanish, Italian or Irish
+
+db.restaurants.find({
+   $nor: [
+      { cuisine: "Bakery" },
+      { cuisine: "Spanish" },
+      { cuisine: "Italian" },
+      { cuisine: "Irish" }
+   ] },
+   { _id: 0, restaurant_id: 0, borough: 0, grades: 0, cuisine: 0 }
+);
 
 // Find the name and address of the first alphabetically named Asian restaurant a grade of A
 
 
 // Aggregating Restaurants
 // List the number of restaurants under each zipcode
+db.restaurants.aggregate([
+   { $group: { _id: "$address.zipcode", sum: { $sum: 1 } } },
+]);
+
 // List unique names of all restaurants with at least 1 grade of A or B sorted in reverse alphabetical order
+
 
 // Aggregating Restaurants with $unwind (Optional)
 // How to Use $unwind
