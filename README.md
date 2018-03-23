@@ -1,9 +1,10 @@
-# assignment_practice_with_mongodb
+# mongodb_practice
 
 Gregory Alford
 
 Querying with the MongoDB shell
 
+I wrote practice queries in /products and /restaurants
 
 ## Getting Started
 
